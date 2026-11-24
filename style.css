@@ -13,3 +13,45 @@ html[data-theme=day]{color-scheme:light;--bg:#e8e0d0;--panel:#f1eadc;--panel-2:#
 @media(max-width:720px){.topbar{height:64px;padding:0 20px}.desktop-nav,.nav-cta{display:none}.top-actions{gap:12px}.menu-toggle{display:flex;width:34px;height:34px;border:1px solid var(--line);background:transparent;flex-direction:column;justify-content:center;gap:5px;align-items:center}.menu-toggle span{width:14px;height:1px;background:var(--text)}.mobile-nav{position:fixed;z-index:29;top:64px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 22px 20px;display:flex;flex-direction:column;gap:0;transform:translateY(-120%);opacity:0;pointer-events:none;transition:transform .4s ease,opacity .3s}.mobile-nav.open{transform:translateY(0);opacity:1;pointer-events:auto}.mobile-nav a{padding:14px 0;border-bottom:1px solid var(--line);font:10px var(--mono);text-transform:uppercase}.scene{padding:100px 22px 75px;min-height:auto}.hero{min-height:100svh;padding-top:105px;padding-bottom:30px}.hero-topline{font-size:7px}.hero-content{grid-template-columns:1fr;gap:45px;margin:55px auto 35px}.hero-title .title-main{font-size:clamp(95px,24vw,160px)}.title-small{font-size:40px}.hero-kicker{font-size:13px}.hero-description{font-size:13px}.hero-actions{gap:17px;flex-wrap:wrap}.button{min-height:44px;padding:0 13px}.hero-board{justify-self:center;max-width:520px;transform:rotate(.5deg)}.blueprint{height:290px}.plan-card{top:65px;min-height:155px;padding:18px}.plan-card strong{font-size:23px}.plan-card small{font-size:8px}.mini-file{width:105px;padding:9px}.door-frame{display:none}.hero-bottom{font-size:7px}.section-index{top:78px;left:22px;font-size:8px}.section-foot{left:22px;right:22px;bottom:18px;font-size:7px}.profile-section,.crew-section,.special-section,.vault-section{display:block;padding-top:115px;padding-bottom:80px}.profile-layout,.special-layout{grid-template-columns:1fr;gap:42px}.profile-section h2,.crew-section h2,.jobs-section h2,.special-section h2,.vault-section h2{font-size:clamp(54px,15vw,82px)}.profile-section .section-intro{margin-top:17px}.notebook{padding:0 19px;transform:rotate(.3deg)}.notebook-body{padding:20px 2px}.notebook-body h3{font-size:29px}.notebook-body>p:not(.handwritten){font-size:12px}.education-stamps{gap:12px}.education-stamps strong{font-size:14px}.education-stamps span{font-size:9px}.crew-heading,.jobs-heading,.vault-heading{display:block;margin-bottom:32px}.crew-heading .section-intro,.vault-heading .section-intro{margin-top:20px}.crew-grid{gap:10px}.crew-card{min-height:245px;padding:15px}.crew-icon{margin:24px 0 18px;width:45px;height:45px}.crew-card h3{font-size:15px}.crew-card p{font-size:10px}.crew-tag{left:15px;bottom:15px;font-size:7px}.crew-wide{min-height:190px}.crew-wide .crew-icon{float:none;margin:20px 0 10px}.crew-wide h3{padding:0}.crew-wide p{max-width:none}.crew-footnote{font-size:7px;line-height:1.6}.jobs-section{padding-top:115px;padding-bottom:90px}.jobs-side-note{margin-top:20px;font-size:8px}.case-board{grid-template-columns:1fr;gap:18px}.case-featured{grid-column:auto;width:100%}.case-file{padding:0 16px 18px;transform:none!important}.case-content{grid-template-columns:43px 1fr;gap:12px;padding-top:17px}.case-number{font-size:30px}.case-info h3{font-size:27px}.case-summary{font-size:11px}.case-meta{grid-template-columns:1fr;gap:10px}.case-actions{align-items:flex-start;gap:10px;flex-direction:column}.case-top{font-size:7px}.evidence-note{font-size:7px}.case-strings{opacity:.35}.jobs-disclaimer{font-size:7px;line-height:1.7}.special-layout{gap:35px}.academy-mark{margin-top:28px}.operation-item{grid-template-columns:52px 1fr 15px;gap:10px;padding:23px 0}.operation-item h3{font-size:22px}.operation-item p{font-size:11px}.operation-item small{font-size:7px}.vault-door-wrap{grid-template-columns:1fr;gap:35px}.vault-door{width:230px}.vault-records{gap:9px}.vault-record{min-height:120px;padding:13px}.vault-record h3{font-size:16px}.vault-record p{font-size:9px}.getaway-section{min-height:100svh;padding-top:110px;padding-bottom:100px}.getaway-layout{grid-template-columns:1fr;gap:40px}.getaway-layout h2{font-size:clamp(60px,17vw,90px)}.getaway-copy{font-size:13px}.mission-complete{padding:23px}.site-footer{padding:15px 22px;gap:10px;flex-wrap:wrap;font-size:7px}.site-footer span:nth-child(2){display:none}.quick-nav{left:50%;right:auto;top:auto;bottom:12px;transform:translateX(-50%);flex-direction:row;align-items:center;gap:13px;padding:10px 13px;white-space:nowrap}.quick-label{display:none}.quick-nav a{font-size:7px}.skip-intro{right:12px;bottom:62px;padding:9px 10px;font-size:7px}.cursor-glow{display:none}}
 @media(max-width:390px){.crew-grid{grid-template-columns:1fr}.crew-wide{grid-column:auto}.crew-card{min-height:210px}.crew-wide{min-height:200px}.education-stamps{grid-template-columns:1fr}.hero-topline span:last-child{font-size:6px}.quick-nav{gap:9px}.quick-nav a{font-size:6px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1!important;transform:none!important}.cursor-glow{display:none}}
+
+
+/* Cinematic signal effects + accessible typewriter treatment */
+.hero-kicker,
+.type-name { min-height: 1.4em; }
+.hero-kicker.typing::after,
+.type-name.typing::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: .95em;
+  margin-left: 5px;
+  vertical-align: -.08em;
+  background: var(--accent);
+  animation: terminalCaret .72s steps(1,end) infinite;
+}
+.hero-title .title-main {
+  animation: titleSignal 7s linear infinite;
+  text-shadow: 0 0 22px color-mix(in srgb,var(--accent) 10%,transparent);
+}
+.status-dot,
+.board-live i,
+.pin i { animation: signalPulse 1.8s ease-in-out infinite; }
+.pin-two i { animation-delay: .35s; }
+.pin-three i { animation-delay: .7s; }
+.stamp,
+.complete-stamp { animation: stampFlicker 5.5s linear infinite; }
+.board-note { animation: noteBlink 6s ease-in-out infinite; }
+.note-two { animation-delay: 2.5s; }
+.case-pin { animation: pinGlow 2.4s ease-in-out infinite; }
+.scroll-cue i { animation: scrollSignal 1.5s ease-in-out infinite; }
+@keyframes terminalCaret { 0%,48%{opacity:1} 49%,100%{opacity:0} }
+@keyframes signalPulse { 0%,100%{opacity:1;filter:drop-shadow(0 0 0 transparent)} 50%{opacity:.42;filter:drop-shadow(0 0 5px var(--accent))} }
+@keyframes titleSignal { 0%,92%,94%,96%,100%{opacity:1;transform:translateX(0)} 93%{opacity:.82;transform:translateX(1px)} 95%{opacity:.94;transform:translateX(-1px)} }
+@keyframes stampFlicker { 0%,4%,6%,8%,55%,57%,100%{opacity:1} 5%,7%,56%{opacity:.48} }
+@keyframes noteBlink { 0%,100%{opacity:.9} 48%,52%{opacity:.42} }
+@keyframes pinGlow { 0%,100%{box-shadow:0 2px 4px #54453a} 50%{box-shadow:0 0 13px color-mix(in srgb,var(--accent) 55%,transparent)} }
+@keyframes scrollSignal { 0%{transform:translateY(-7px);opacity:0} 35%{opacity:1} 100%{transform:translateY(7px);opacity:0} }
+@media(prefers-reduced-motion:reduce){
+  .hero-title .title-main,.status-dot,.board-live i,.pin i,.stamp,.complete-stamp,.board-note,.case-pin,.scroll-cue i,
+  .hero-kicker.typing::after,.type-name.typing::after { animation:none!important; }
+}
