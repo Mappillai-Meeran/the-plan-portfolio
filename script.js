@@ -223,12 +223,6 @@
       });
     });
 
-    // Vault dial turns as the archive is reached; it is decorative, never a gate.
-    gsap.to('.vault-door', {
-      rotate: 0, ease: 'power2.inOut',
-      scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 80%', end: 'center center', scrub: CONFIG.scrub }
-    });
-
     // One global reading-progress indicator.
     gsap.to('.scroll-progress span', {
       scaleX: 1, ease: 'none',
