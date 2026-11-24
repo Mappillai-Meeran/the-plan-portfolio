@@ -10,7 +10,9 @@
     themeDuration: 1.9,
     revealY: 22,
     mobileBreakpoint: 720,
-    accent: '#c83c36'
+    accent: '#c83c36',
+    keypadCode: '2468', // Replace with your preferred four-digit code.
+    clockTimeZone: 'Asia/Kolkata'
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -256,8 +258,81 @@
     });
   });
 
+  
+  // PHASES 2–6: ambient details and skippable section interactions.
+  const clock = $('#missionClock');
+  function updateMissionClock() {
+    if (!clock) return;
+    clock.textContent = new Intl.DateTimeFormat('en-GB', { timeZone: CONFIG.clockTimeZone, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date());
+  }
+  updateMissionClock();
+  const clockTimer = window.setInterval(updateMissionClock, 1000);
+
+  // Optional four-digit vault easter egg. No content is gated by it.
+  const keypad = $('.vault-keypad'), keypadDisplay = $('#keypadDisplay'), keypadFeedback = $('#keypadFeedback');
+  let keypadEntry = '';
+  if (keypad) keypad.addEventListener('click', (event) => {
+    const key = event.target.closest('[data-key]');
+    if (!key || keypad.classList.contains('unlocked')) return;
+    const value = key.dataset.key;
+    if (value === 'clear') keypadEntry = '';
+    else if (value === 'enter') {
+      if (keypadEntry === CONFIG.keypadCode) {
+        keypad.classList.add('unlocked');
+        keypadFeedback.textContent = 'Vault unlocked. The archive was open all along.';
+        if (!reduceMotion && window.gsap) gsap.fromTo('.vault-celebration', { scale: .8, opacity: 0 }, { scale: 1, opacity: 1, duration: .65, ease: 'back.out(1.8)' });
+      } else { keypadFeedback.textContent = 'Not quite. Try again, or skip this optional check.'; keypadEntry = ''; }
+    } else if (keypadEntry.length < 4) keypadEntry += value;
+    keypadDisplay.textContent = keypadEntry.padEnd(4, '_').split('').join(' ');
+  });
+
+  // Case-file safe dials: click or tap to reveal a stamp.
+  $('.case-file').forEach((card) => {
+    const dial = $('.safe-dial', card);
+    if (!dial) return;
+    dial.addEventListener('click', () => {
+      const opened = card.classList.toggle('is-open');
+      dial.setAttribute('aria-expanded', String(opened));
+      dial.setAttribute('aria-label', opened ? 'Close this case file' : 'Open this case file');
+    });
+  });
+
+  const countdown = $('#finalCountdown');
+  if (countdown) {
+    const updateCountdown = () => {
+      const range = Math.max(1, document.body.scrollHeight - window.innerHeight);
+      const progress = Math.max(0, Math.min(1, window.scrollY / range));
+      countdown.textContent = String(Math.max(0, Math.ceil(10 * (1 - progress))));
+    };
+    window.addEventListener('scroll', updateCountdown, { passive: true });
+    updateCountdown();
+  }
+
+  // One GSAP ticker remains the only Lenis driver. These timelines subscribe
+  // to ScrollTrigger and animate transforms, opacity and SVG stroke offsets.
+  if (!reduceMotion && window.gsap && window.ScrollTrigger) {
+    gsap.to('.security-door-panel', { rotateY: -72, ease: 'power2.inOut', scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=65%', scrub: CONFIG.scrub } });
+    gsap.to('.security-door', { opacity: .15, y: 35, ease: 'sine.inOut', scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=80%', scrub: CONFIG.scrub } });
+    gsap.to('.security-camera', { rotate: 24, ease: 'sine.inOut', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: CONFIG.scrub } });
+    gsap.to('.notebook-page-edge', { rotateY: -24, transformOrigin: 'right center', ease: 'power2.inOut', scrollTrigger: { trigger: '.profile-section', start: 'top 70%', end: 'bottom 45%', scrub: CONFIG.scrub } });
+    gsap.to('.redaction-stack span', { scaleX: 0, opacity: .25, stagger: .2, ease: 'power2.inOut', scrollTrigger: { trigger: '.redaction-stack', start: 'top 80%', end: 'bottom 40%', scrub: CONFIG.scrub } });
+    gsap.to('.timeline-string', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.mastermind-timeline', start: 'top 90%', end: 'bottom 50%', scrub: CONFIG.scrub } });
+    gsap.to('.laser-grid', { x: 35, y: -20, ease: 'none', scrollTrigger: { trigger: '.crew-section', start: 'top bottom', end: 'bottom top', scrub: CONFIG.scrub } });
+    gsap.to('.case-strings path', { strokeDashoffset: -120, ease: 'none', scrollTrigger: { trigger: '.case-board', start: 'top 85%', end: 'bottom 20%', scrub: CONFIG.scrub } });
+    gsap.to('.field-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.field-map', start: 'top 90%', end: 'bottom 35%', scrub: CONFIG.scrub } });
+    gsap.to('.route-marker', { x: () => Math.max(0, $('.field-map').clientWidth - 45), y: -58, ease: 'none', scrollTrigger: { trigger: '.field-map', start: 'top 90%', end: 'bottom 35%', scrub: CONFIG.scrub } });
+    gsap.to('.vault-door', { rotate: 162, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 80%', end: 'center center', scrub: CONFIG.scrub } });
+    gsap.to('.vault-bolt', { x: (index) => index % 2 ? 10 : -10, opacity: .25, stagger: .04, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 65%', end: 'center 35%', scrub: CONFIG.scrub } });
+    gsap.to('.getaway-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.getaway-route', start: 'top 90%', end: 'bottom 55%', scrub: CONFIG.scrub } });
+    gsap.to('.mission-complete', { y: -12, rotate: 0, ease: 'sine.inOut', scrollTrigger: { trigger: '.getaway-section', start: 'top 80%', end: 'bottom bottom', scrub: CONFIG.scrub } });
+  } else {
+    $('.case-file').forEach(card => card.classList.add('is-static'));
+    $('.field-route-draw,.timeline-string,.getaway-route-draw').forEach(path => { path.style.strokeDashoffset = '0'; });
+  }
+
   // Clean up if this page is ever embedded and removed by a navigation framework.
   window.addEventListener('pagehide', () => {
+    window.clearInterval(clockTimer);
     if (lenis) {
       if (tickerCallback) gsap.ticker.remove(tickerCallback);
       lenis.destroy();
