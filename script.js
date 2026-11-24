@@ -289,6 +289,8 @@
     dial.addEventListener('click', () => {
       const opened = card.classList.toggle('is-open');
       dial.setAttribute('aria-expanded', String(opened));
+      const stamp = $('.case-open-stamp', card);
+      if (stamp) stamp.textContent = opened ? 'CLEARED' : 'CASE OPEN';
       dial.setAttribute('aria-label', opened ? 'Close this case file' : 'Open this case file');
     });
   });
@@ -315,6 +317,7 @@
     gsap.to('.timeline-string', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.mastermind-timeline', start: 'top 90%', end: 'bottom 50%', scrub: CONFIG.scrub } });
     gsap.to('.laser-grid', { x: 35, y: -20, ease: 'none', scrollTrigger: { trigger: '.crew-section', start: 'top bottom', end: 'bottom top', scrub: CONFIG.scrub } });
     gsap.to('.case-strings path', { strokeDashoffset: -120, ease: 'none', scrollTrigger: { trigger: '.case-board', start: 'top 85%', end: 'bottom 20%', scrub: CONFIG.scrub } });
+    gsap.to('.safe-dial span', { rotate: 360, ease: 'none', scrollTrigger: { trigger: '.case-board', start: 'top 85%', end: 'bottom 20%', scrub: CONFIG.scrub } });
     gsap.to('.field-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.field-map', start: 'top 90%', end: 'bottom 35%', scrub: CONFIG.scrub } });
     gsap.to('.route-marker', { x: () => Math.max(0, $('.field-map').clientWidth - 45), y: -58, ease: 'none', scrollTrigger: { trigger: '.field-map', start: 'top 90%', end: 'bottom 35%', scrub: CONFIG.scrub } });
     gsap.to('.vault-door', { rotate: 162, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 80%', end: 'center center', scrub: CONFIG.scrub } });
