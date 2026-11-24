@@ -36,6 +36,15 @@
   }
   syncThemeLabel();
 
+  // Optional case-file screenshots: provide a local path in data-case-image.
+  // Empty paths remain hidden and never create broken-image placeholders.
+  $('[data-case-image]').forEach((image) => {
+    const path = (image.dataset.caseImage || '').trim();
+    if (!path) return;
+    image.src = path;
+    image.closest('.case-screenshot')?.removeAttribute('hidden');
+  });
+
   // Typewriter intro: the line and name are typed in sequence.
   const typeTargets = $('[data-typewriter]');
   if (typeTargets.length) {
