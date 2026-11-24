@@ -112,7 +112,7 @@
   toggle.addEventListener('click', () => setTheme(root.dataset.theme === 'night' ? 'day' : 'night'));
 
   // Cursor spotlight is decorative only; disabled on touch and reduced-motion devices.
-  if (!reduceMotion && matchMedia('(pointer:fine)').matches) {
+  if (!reduceMotion && window.gsap && matchMedia('(pointer:fine)').matches) {
     window.addEventListener('pointermove', (event) => {
       gsap.to(cursorGlow, { x: event.clientX, y: event.clientY, duration: .7, ease: 'power2.out', overwrite: 'auto' });
     }, { passive: true });
@@ -320,6 +320,8 @@
     gsap.to('.vault-door', { rotate: 162, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 80%', end: 'center center', scrub: CONFIG.scrub } });
     gsap.to('.vault-bolt', { x: (index) => index % 2 ? 10 : -10, opacity: .25, stagger: .04, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 65%', end: 'center 35%', scrub: CONFIG.scrub } });
     gsap.to('.getaway-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.getaway-route', start: 'top 90%', end: 'bottom 55%', scrub: CONFIG.scrub } });
+    gsap.to('.vault-door', { rotate: 0, ease: 'power2.inOut', scrollTrigger: { trigger: '.getaway-section', start: 'top 80%', end: 'top 25%', scrub: CONFIG.scrub } });
+    gsap.fromTo('.contact-actions', { y: 18, opacity: .35 }, { y: 0, opacity: 1, ease: 'power2.out', scrollTrigger: { trigger: '.getaway-section', start: 'top 78%', end: 'top 28%', scrub: CONFIG.scrub } });
     gsap.to('.mission-complete', { y: -12, rotate: 0, ease: 'sine.inOut', scrollTrigger: { trigger: '.getaway-section', start: 'top 80%', end: 'bottom bottom', scrub: CONFIG.scrub } });
   } else {
     $$('.case-file').forEach(card => card.classList.add('is-static'));
