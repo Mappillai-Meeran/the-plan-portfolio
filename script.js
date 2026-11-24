@@ -85,6 +85,7 @@
       return;
     }
 
+    if (!window.gsap) { apply(); return; }
     const rect = toggle.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
@@ -94,6 +95,7 @@
     if (supportsViewTransition) {
       const transition = document.startViewTransition(apply);
       transition.ready.then(() => {
+        gsap.to(wash, { opacity: .28, duration: .8, yoyo: true, repeat: 1, ease: 'sine.inOut' });
         document.documentElement.animate(
           { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
           { duration: CONFIG.themeDuration * 1000, easing: 'cubic-bezier(.22,.7,.2,1)', pseudoElement: '::view-transition-new(root)' }
