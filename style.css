@@ -123,3 +123,6 @@ html[data-theme=day]{color-scheme:light;--bg:#e8e0d0;--panel:#f1eadc;--panel-2:#
 
 .safe-dial span{position:absolute;left:50%;top:50%;width:14px;height:2px;background:#a33a34;transform:translate(-50%,-50%);transform-origin:center}
 .case-screenshot{position:relative}.case-screenshot:before,.case-screenshot:after{content:"";position:absolute;z-index:2;width:16px;height:16px;border-color:#a73530;border-style:solid;pointer-events:none}.case-screenshot:before{top:0;left:0;border-width:2px 0 0 2px}.case-screenshot:after{right:0;bottom:18px;border-width:0 2px 2px 0}
+
+.special-right{min-width:0;display:flex;flex-direction:column;justify-content:center;gap:16px}.getaway-right{min-width:0;display:grid;gap:22px;align-content:center}
+@media(max-width:720px){.special-right{gap:10px}.getaway-right{gap:18px}}
