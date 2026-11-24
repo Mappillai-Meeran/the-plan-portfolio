@@ -55,3 +55,33 @@ html[data-theme=day]{color-scheme:light;--bg:#e8e0d0;--panel:#f1eadc;--panel-2:#
   .hero-title .title-main,.status-dot,.board-live i,.pin i,.stamp,.complete-stamp,.board-note,.case-pin,.scroll-cue i,
   .hero-kicker.typing::after,.type-name.typing::after { animation:none!important; }
 }
+
+
+/* Phase 1 content additions: optional project evidence and grouped credentials. */
+.profile-actions { margin-top: 24px; }
+.profile-actions .button { display: inline-flex; align-items: center; gap: 10px; }
+.vault-groups { display: grid; gap: 28px; min-width: 0; }
+.vault-group { min-width: 0; }
+.vault-group-title {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font: 18px var(--type);
+  letter-spacing: .02em;
+}
+.case-screenshot { margin: 0 0 18px; max-width: 100%; }
+.case-screenshot img {
+  display: block;
+  width: min(100%, 560px);
+  max-height: 280px;
+  object-fit: cover;
+  border: 1px solid rgba(40,36,30,.25);
+  padding: 5px;
+  background: rgba(255,255,255,.48);
+  box-shadow: 0 8px 22px rgba(25,20,15,.12);
+}
+.case-screenshot[hidden] { display: none; }
+@media (max-width: 720px) {
+  .vault-groups { gap: 22px; }
+  .vault-group-title { font-size: 16px; }
+  .case-screenshot img { max-height: 210px; }
+}
