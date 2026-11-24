@@ -21,7 +21,8 @@ Then visit `http://localhost:8000`.
 ## Personal assets to add
 - **Resume:** place your PDF at `resume.pdf` in the repository root. The download button already points there.
 - **Project screenshots:** add image files under `assets/screenshots/`, then set the matching `data-case-image` value on each project's `img` in `index.html`. Leave it empty to keep the image slot hidden.
-- **Project repositories:** add a project-specific repository URL only when you have confirmed the correct URL. No generic profile links are used as substitutes.
+- **Project repositories:** add a project-specific repository URL only when you have confirmed the correct URL.
+- **Vault easter egg:** change `keypadCode` in the `CONFIG` object near the top of `script.js` to your own four-digit code. No generic profile links are used as substitutes.
 - **Certificates:** add credential URLs only after checking the original certificates.
 
 The contact email is configured in the two mail links in `index.html`.
