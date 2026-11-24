@@ -36,6 +36,32 @@
   }
   syncThemeLabel();
 
+  // Typewriter intro: the line and name are typed in sequence.
+  const typeTargets = $('[data-typewriter]');
+  if (typeTargets.length) {
+    if (reduceMotion) {
+      typeTargets.forEach(el => { el.textContent = el.dataset.typewriter; });
+    } else {
+      const typeOne = (el, startDelay = 0) => {
+        const fullText = el.dataset.typewriter || el.textContent;
+        el.setAttribute('aria-label', fullText);
+        el.textContent = '';
+        el.classList.add('typing');
+        let index = 0;
+        window.setTimeout(function writeNext() {
+          el.textContent = fullText.slice(0, index + 1);
+          index += 1;
+          if (index < fullText.length) {
+            window.setTimeout(writeNext, 42 + Math.random() * 34);
+          } else {
+            el.classList.remove('typing');
+          }
+        }, startDelay);
+      };
+      typeTargets.forEach((el, index) => typeOne(el, index * 1150 + 450));
+    }
+  }
+
   function setTheme(nextTheme) {
     const apply = () => {
       root.dataset.theme = nextTheme;
