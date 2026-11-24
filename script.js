@@ -149,6 +149,23 @@
 
   // Scroll-linked visual storytelling. All animated properties are transform/opacity.
   if (window.gsap && window.ScrollTrigger && !reduceMotion) {
+    // A more visible opening sequence: board enters, evidence pins land, route draws.
+    gsap.fromTo('.hero-board',
+      { y: 48, opacity: 0, rotate: 3, scale: .94 },
+      { y: 0, opacity: 1, rotate: 0, scale: 1, duration: 1.35, delay: .25, ease: 'power3.out' }
+    );
+    gsap.fromTo('.plan-card, .mini-file',
+      { y: 22, opacity: 0, rotate: -3 },
+      { y: 0, opacity: 1, rotate: 0, duration: .8, delay: .85, stagger: .18, ease: 'back.out(1.35)' }
+    );
+    gsap.fromTo('.pin',
+      { scale: 0, opacity: 0 },
+      { scale: 1, opacity: 1, duration: .48, delay: 1.35, stagger: .22, ease: 'back.out(2.2)' }
+    );
+    gsap.fromTo('.hero-title',
+      { y: 18, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1.05, delay: .12, ease: 'power2.out' }
+    );
     gsap.utils.toArray('.reveal').forEach((element) => {
       gsap.to(element, {
         y: 0, opacity: 1, duration: 1, ease: 'power2.out',
