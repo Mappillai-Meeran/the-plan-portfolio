@@ -40,7 +40,7 @@
 
   // Optional case-file screenshots: provide a local path in data-case-image.
   // Empty paths remain hidden and never create broken-image placeholders.
-  $('[data-case-image]').forEach((image) => {
+  $$('[data-case-image]').forEach((image) => {
     const path = (image.dataset.caseImage || '').trim();
     if (!path) return;
     image.src = path;
@@ -281,7 +281,7 @@
   });
 
   // Case-file safe dials: click or tap to reveal a stamp.
-  $('.case-file').forEach((card) => {
+  $$('.case-file').forEach((card) => {
     const dial = $('.safe-dial', card);
     if (!dial) return;
     dial.addEventListener('click', () => {
@@ -320,8 +320,8 @@
     gsap.to('.getaway-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.getaway-route', start: 'top 90%', end: 'bottom 55%', scrub: CONFIG.scrub } });
     gsap.to('.mission-complete', { y: -12, rotate: 0, ease: 'sine.inOut', scrollTrigger: { trigger: '.getaway-section', start: 'top 80%', end: 'bottom bottom', scrub: CONFIG.scrub } });
   } else {
-    $('.case-file').forEach(card => card.classList.add('is-static'));
-    $('.field-route-draw,.timeline-string,.getaway-route-draw').forEach(path => { path.style.strokeDashoffset = '0'; });
+    $$('.case-file').forEach(card => card.classList.add('is-static'));
+    $$('.field-route-draw,.timeline-string,.getaway-route-draw').forEach(path => { path.style.strokeDashoffset = '0'; });
   }
 
   // Clean up if this page is ever embedded and removed by a navigation framework.
