@@ -1,0 +1,203 @@
+/* ══════════════════════════════════════════════════════════════════════
+   THE HEIST SUPREME EDITION (styles.css extension)
+   Features:
+   - Interactive 3D Red Laser Tripwires with Security Breach Alarm
+   - Falling Euro Banknotes & Golden Bullion Particle System
+   - Interactive CCTV Security Monitor Overlay with Dynamic Camera Switching
+   - Classified Redaction Scanner (Hover to Reveal with Thermal Sound)
+   - Realistic Bank Vault Wheel Mechanics with 3D Depth & Tumblers
+   - Bella Ciao Anthem Synthesizer Engine
+   - 3D Holographic Project Dossier Flip Cards
+   - CRT Phosphor Screen Grain, Scanlines & Aberrations
+══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. CINEMATIC OVERLAYS & CRT HUD ── */
+.cctv-hud {
+  position: fixed; inset: 0; pointer-events: none; z-index: 990;
+  border: 1px solid rgba(200, 60, 54, 0.15);
+  box-shadow: inset 0 0 100px rgba(0,0,0,0.85);
+}
+.cctv-header {
+  position: absolute; top: 88px; left: 5.4vw; right: 5.4vw;
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--mono); font-size: 11px; color: var(--accent);
+  letter-spacing: 0.15em; text-transform: uppercase;
+  background: rgba(17, 18, 20, 0.65); padding: 6px 14px;
+  border-left: 3px solid var(--accent); border-right: 3px solid var(--accent);
+  backdrop-filter: blur(4px);
+}
+.cctv-rec {
+  display: inline-flex; align-items: center; gap: 8px; font-weight: bold; color: #ff3333;
+}
+.rec-pulse {
+  width: 10px; height: 10px; background: #ff2222; border-radius: 50%;
+  box-shadow: 0 0 14px #ff0000; animation: blinkRec 1s steps(1) infinite;
+}
+@keyframes blinkRec { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+.cctv-cam-switch {
+  display: inline-flex; gap: 6px; pointer-events: auto;
+}
+.cam-btn {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(200,60,54,0.3);
+  color: #aaa; font-family: var(--mono); font-size: 9px; padding: 3px 8px; cursor: pointer;
+  transition: all 0.2s;
+}
+.cam-btn:hover, .cam-btn.active {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(200,60,54,0.6);
+}
+
+/* ── 2. INTERACTIVE RED SECURITY LASER TRIPWIRES ── */
+.laser-tripwire-zone {
+  position: relative; width: 100%; height: 140px; margin: 40px 0;
+  overflow: hidden; background: radial-gradient(ellipse at center, rgba(200,60,54,0.08) 0%, transparent 70%);
+  border-top: 1px dashed rgba(200,60,54,0.25); border-bottom: 1px dashed rgba(200,60,54,0.25);
+  display: flex; align-items: center; justify-content: center;
+}
+.laser-beam {
+  position: absolute; width: 110%; height: 2px;
+  background: #ff2a2a; box-shadow: 0 0 8px #ff0000, 0 0 18px #ff0000, 0 0 32px #ff2a2a;
+  pointer-events: auto; cursor: crosshair; transition: filter 0.2s;
+}
+.laser-beam::before {
+  content: ''; position: absolute; inset: -4px 0; background: transparent;
+}
+.laser-beam:hover {
+  filter: brightness(2.5); height: 4px;
+}
+.laser-beam-1 { transform: rotate(-6deg); top: 30%; animation: laserSway1 6s ease-in-out infinite alternate; }
+.laser-beam-2 { transform: rotate(8deg); top: 65%; animation: laserSway2 7s ease-in-out infinite alternate; }
+.laser-beam-3 { transform: rotate(-2deg); top: 50%; animation: laserSway3 5s ease-in-out infinite alternate; }
+
+@keyframes laserSway1 { from { transform: rotate(-7deg) translateY(-8px); } to { transform: rotate(-3deg) translateY(8px); } }
+@keyframes laserSway2 { from { transform: rotate(9deg) translateY(10px); } to { transform: rotate(4deg) translateY(-10px); } }
+@keyframes laserSway3 { from { transform: rotate(-4deg) translateY(6px); } to { transform: rotate(2deg) translateY(-6px); } }
+
+.laser-warning {
+  position: absolute; font-family: var(--mono); font-size: 10px;
+  letter-spacing: 0.2em; color: #ff5555; pointer-events: none;
+  background: rgba(0,0,0,0.7); padding: 4px 12px; border: 1px solid #ff3333;
+  animation: warningPulse 1.5s ease-in-out infinite;
+}
+@keyframes warningPulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.95; } }
+
+/* Alarm State when Tripped */
+body.alarm-active {
+  animation: redAlert 0.8s ease infinite alternate;
+}
+@keyframes redAlert {
+  0% { box-shadow: inset 0 0 80px rgba(255, 0, 0, 0.2); }
+  100% { box-shadow: inset 0 0 160px rgba(255, 0, 0, 0.7); }
+}
+.alarm-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+  background: #ff1111; color: #fff; font-family: var(--mono);
+  font-weight: bold; text-align: center; padding: 10px; font-size: 13px;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  transform: translateY(-100%); transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  box-shadow: 0 4px 30px rgba(255,0,0,0.9);
+}
+.alarm-banner.active { transform: translateY(0); }
+
+/* ── 3. FALLING EURO NOTES & GOLD BULLION CANVASES ── */
+#moneyCanvas {
+  position: fixed; inset: 0; pointer-events: none; z-index: 85;
+}
+
+/* ── 4. CLASSIFIED THERMAL REDACTION (Hover scanner) ── */
+.classified-redacted {
+  position: relative; display: inline-block; background: #1c1c1c; color: transparent !important;
+  padding: 2px 8px; border-radius: 2px; cursor: help; user-select: none;
+  transition: all 0.4s ease; border: 1px solid rgba(255,255,255,0.1);
+}
+.classified-redacted::after {
+  content: 'TOP SECRET // DECLASSIFY';
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 8px; color: #c83c36; letter-spacing: 0.1em;
+  font-weight: bold;
+}
+.classified-redacted:hover {
+  background: rgba(200, 60, 54, 0.18); color: #fff !important;
+  text-shadow: 0 0 8px rgba(255,255,255,0.8); border-color: #c83c36;
+}
+.classified-redacted:hover::after {
+  display: none;
+}
+
+/* ── 5. 3D INTERACTIVE PROJECT DOSSIER FLIP CARDS ── */
+.case-file-3d-wrap {
+  perspective: 1400px;
+}
+.case-file-card {
+  position: relative; width: 100%; min-height: 380px;
+  transform-style: preserve-3d; transition: transform 0.85s cubic-bezier(0.2, 0.85, 0.32, 1.2);
+}
+.case-file-card.flipped {
+  transform: rotateY(180deg);
+}
+.card-face {
+  position: absolute; inset: 0; backface-visibility: hidden;
+  border-radius: 4px; overflow: hidden;
+}
+.card-face.face-back {
+  transform: rotateY(180deg);
+  background: #18191b !important;
+  border: 1px solid #c83c36;
+  box-shadow: 0 15px 40px rgba(200, 60, 54, 0.25);
+  padding: 24px; display: flex; flex-direction: column; justify-content: space-between;
+}
+.card-face.face-back h4 {
+  font-family: var(--type); font-size: 24px; color: #c83c36; margin: 0 0 8px 0;
+}
+.heist-schematic-bg {
+  position: absolute; right: 10px; bottom: 10px; width: 140px; height: 140px;
+  opacity: 0.08; pointer-events: none;
+}
+.flip-back-btn {
+  align-self: flex-start; background: transparent; border: 1px solid #c83c36;
+  color: #c83c36; font-family: var(--mono); font-size: 10px; padding: 6px 14px;
+  cursor: pointer; transition: all 0.2s;
+}
+.flip-back-btn:hover {
+  background: #c83c36; color: #fff;
+}
+
+/* ── 6. REALISTIC DUAL-AXIS BANK VAULT LOCK MECHANICS ── */
+.vault-combo-dial-wrap {
+  display: flex; gap: 16px; align-items: center; justify-content: center;
+  margin: 20px 0; padding: 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--line);
+}
+.combo-dial-wheel {
+  width: 58px; height: 58px; border-radius: 50%;
+  background: radial-gradient(circle, #555 0%, #222 70%, #111 100%);
+  border: 3px solid #888; box-shadow: 0 0 15px rgba(0,0,0,0.9), inset 0 0 8px #000;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-weight: bold; color: #e8dfcc; font-size: 16px;
+  cursor: pointer; user-select: none; transition: transform 0.3s;
+}
+.combo-dial-wheel:active {
+  transform: scale(0.95);
+}
+
+/* ── 7. BELLA CIAO MUSIC BUTTON IN HEADER ── */
+.anthem-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, rgba(200,60,54,0.2) 0%, rgba(200,60,54,0.05) 100%);
+  border: 1px solid var(--accent); color: var(--accent);
+  font-family: var(--mono); font-size: 10px; padding: 0 12px; height: 34px;
+  cursor: pointer; transition: all 0.3s; letter-spacing: 0.08em;
+}
+.anthem-btn:hover, .anthem-btn.playing {
+  background: var(--accent); color: #fff; box-shadow: 0 0 16px rgba(200,60,54,0.6);
+}
+.anthem-waves {
+  display: flex; gap: 2px; align-items: flex-end; height: 14px;
+}
+.anthem-bar {
+  width: 2px; height: 4px; background: currentColor; transition: height 0.2s;
+}
+.anthem-btn.playing .anthem-bar:nth-child(1) { animation: waveBar 0.5s ease infinite alternate; }
+.anthem-btn.playing .anthem-bar:nth-child(2) { animation: waveBar 0.7s 0.2s ease infinite alternate; }
+.anthem-btn.playing .anthem-bar:nth-child(3) { animation: waveBar 0.6s 0.4s ease infinite alternate; }
+@keyframes waveBar { from { height: 3px; } to { height: 14px; } }

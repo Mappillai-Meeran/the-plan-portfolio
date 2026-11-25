@@ -11,6 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Special+Elite&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./enhancements.css">
+  <link rel="stylesheet" href="./heist-supreme.css">
   <script>
     (function () {
       try {
@@ -22,6 +23,25 @@
   </script>
 </head>
 <body>
+
+  <!-- ═══════════════════════════════════════════════════
+       SUPREME CINEMATIC HUD & CANVAS
+  ═══════════════════════════════════════════════════ -->
+  <canvas id="moneyCanvas"></canvas>
+  <div class="alarm-banner" id="alarmBanner">⚠️ SECURITY BREACH DETECTED · PERIMETER TRIPWIRE COMPROMISED ⚠️</div>
+
+  <div class="cctv-hud" aria-hidden="true">
+    <div class="cctv-header">
+      <div class="cctv-rec"><span class="rec-pulse"></span> REC [LIVE FEED]</div>
+      <div id="cctvCamName">CAM 01 — ROYAL MINT / MAIN HALL</div>
+      <div class="cctv-cam-switch">
+        <button class="cam-btn active" data-cam="CAM 01 — ROYAL MINT / MAIN HALL" type="button">CAM 1</button>
+        <button class="cam-btn" data-cam="CAM 02 — BASEMENT / PRINTING PRESS" type="button">CAM 2</button>
+        <button class="cam-btn" data-cam="CAM 03 — VAULT PERIMETER" type="button">CAM 3</button>
+        <button class="cam-btn" data-cam="CAM 04 — NIGHT VISION / ROOFTOP" type="button">CAM 4</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ═══════════════════════════════════════════════════
        CINEMATIC INTRO SCREEN
@@ -143,6 +163,11 @@
       <a href="#featured">Work</a><a href="#mastermind">About</a><a href="#crew">Skills</a><a href="#getaway">Contact</a>
     </nav>
     <div class="top-actions">
+      <!-- Bella Ciao Anthem Synth -->
+      <button class="anthem-btn" id="anthemBtn" type="button" aria-label="Play Bella Ciao heist anthem">
+        <span class="anthem-waves"><span class="anthem-bar"></span><span class="anthem-bar"></span><span class="anthem-bar"></span></span>
+        <span class="anthem-label">BELLA CIAO</span>
+      </button>
       <a class="nav-cta" href="#featured">View work <span>↗</span></a>
       <!-- Sound Toggle -->
       <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle ambient sound" aria-pressed="false">
@@ -328,6 +353,15 @@
           <div><p class="eyebrow">THE PLAN · FIELD CHALLENGES</p><h2 id="obstaclesTitle">Every build has<br><em>obstacles.</em></h2></div>
           <p class="section-intro">The challenge is the plot twist. These are real problems from my projects—and the tools I use to work through them.</p>
         </div>
+
+        <!-- ⚡ INTERACTIVE RED LASER TRIPWIRE OBSTACLE ZONE ⚡ -->
+        <div class="laser-tripwire-zone" title="Move your crosshair over the laser beams to test the alarm!">
+          <div class="laser-beam laser-beam-1"></div>
+          <div class="laser-beam laser-beam-2"></div>
+          <div class="laser-beam laser-beam-3"></div>
+          <div class="laser-warning">⚠️ RESTRICTED SECTOR // DO NOT BREACH TRIPWIRES ⚠️</div>
+        </div>
+
         <div class="obstacle-route" aria-hidden="true"><span></span><span></span><span></span></div>
         <div class="obstacle-grid">
           <article class="obstacle-card">
@@ -491,5 +525,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
   <script src="./script.js"></script>
   <script src="./enhancements.js"></script>
+  <script src="./heist-supreme.js"></script>
 </body>
 </html>
