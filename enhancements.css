@@ -1,0 +1,462 @@
+/* ═══════════════════════════════════════════════════════════
+   THE PLAN — enhancements.css  v2.0
+   Money Heist cinematic upgrade layer.
+   Add <link rel="stylesheet" href="./enhancements.css"> in <head>
+   after style.css. No changes to style.css required.
+═══════════════════════════════════════════════════════════ */
+
+/* ─── CUSTOM CURSOR ─────────────────────────────────────── */
+/* Hide default cursor on pointer devices only */
+@media (pointer: fine) {
+  body, a, button, [role="button"] { cursor: none !important; }
+}
+
+.custom-cursor {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  /* will-change keeps GPU compositing smooth */
+  will-change: transform, width, height;
+}
+/* Horizontal crosshair bar */
+.cursor-h {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px;
+  background: #c83c36;
+  transform: translateY(-50%);
+}
+/* Vertical crosshair bar */
+.cursor-v {
+  position: absolute;
+  left: 50%; top: 0; bottom: 0;
+  width: 1px;
+  background: #c83c36;
+  transform: translateX(-50%);
+}
+/* Circle ring around crosshair */
+.cursor-ring {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(200, 60, 54, 0.55);
+  border-radius: 50%;
+  transition: inset 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+              border-color 0.25s;
+}
+.custom-cursor.hovering { width: 50px; height: 50px; }
+.custom-cursor.hovering .cursor-ring { inset: 11px; border-color: rgba(200, 60, 54, 0.9); }
+.custom-cursor.clicking { width: 18px; height: 18px; }
+.custom-cursor.clicking .cursor-ring { inset: 3px; }
+
+/* Dot that follows instantly */
+.cursor-dot {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  width: 4px;
+  height: 4px;
+  background: #c83c36;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+/* Hide custom cursor on touch / small screens */
+@media (max-width: 720px), (pointer: coarse), (hover: none) {
+  .custom-cursor, .cursor-dot { display: none !important; }
+  body, a, button, [role="button"] { cursor: auto !important; }
+}
+
+
+/* ─── CINEMATIC INTRO SCREEN ─────────────────────────────── */
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #060708;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+              visibility 0.9s;
+}
+.intro-screen.done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* TV static overlay */
+.intro-static {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: staticShift 0.11s steps(2, end) infinite;
+}
+@keyframes staticShift {
+  0%   { opacity: 0.09; transform: translate(0, 0); }
+  25%  { opacity: 0.13; transform: translate(-2px, 1px); }
+  50%  { opacity: 0.07; transform: translate(2px, -1px); }
+  75%  { opacity: 0.11; transform: translate(-1px, -2px); }
+  100% { opacity: 0.09; transform: translate(0, 0); }
+}
+
+/* Scan-line CRT effect */
+.intro-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 2px,
+    rgba(0, 0, 0, 0.18) 2px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+  z-index: 1;
+}
+
+.intro-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.intro-logo {
+  font: 900 100px/1 'DM Sans', sans-serif;
+  color: #c83c36;
+  letter-spacing: -0.08em;
+  animation: introPulse 2.2s ease-in-out infinite alternate;
+}
+@keyframes introPulse {
+  from { text-shadow: 0 0 40px rgba(200, 60, 54, 0.4), 0 0 80px rgba(200, 60, 54, 0.1); }
+  to   { text-shadow: 0 0 80px rgba(200, 60, 54, 0.75), 0 0 140px rgba(200, 60, 54, 0.3); }
+}
+
+/* OG Dalí mask in intro */
+.intro-mask {
+  width: 108px;
+  height: 130px;
+  opacity: 0;
+  animation: maskReveal 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.55s forwards;
+  filter: drop-shadow(0 0 20px rgba(200, 60, 54, 0.35));
+}
+@keyframes maskReveal {
+  from { opacity: 0; transform: scale(0.65) translateY(28px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.intro-text { display: flex; flex-direction: column; gap: 5px; }
+.intro-label { color: #3a3a3a; font-size: 9px; letter-spacing: 0.18em; font-family: 'DM Mono', monospace; }
+.intro-code  { color: #c83c36; font-size: 11px; letter-spacing: 0.14em; font-family: 'DM Mono', monospace; min-height: 1.4em; }
+
+.intro-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+.intro-bar {
+  width: 200px;
+  height: 2px;
+  background: #1c1e1f;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px #2a2a2a;
+}
+.intro-bar span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #7a2420, #c83c36, #e65a50);
+  box-shadow: 0 0 10px rgba(200, 60, 54, 0.6);
+  transition: width 0.05s linear;
+}
+.intro-percent {
+  color: #3a3a3a;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  font-family: 'DM Mono', monospace;
+  min-width: 32px;
+  text-align: left;
+}
+
+.intro-skip {
+  position: absolute;
+  bottom: 22px;
+  right: 22px;
+  z-index: 3;
+  border: 1px solid #252525;
+  background: transparent;
+  color: #3d3d3d;
+  padding: 9px 13px;
+  font-family: 'DM Mono', monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 0.25s, border-color 0.25s;
+}
+.intro-skip:hover { color: #c83c36; border-color: rgba(200, 60, 54, 0.6); }
+
+
+/* ─── INTERCEPTED TRANSMISSION ALERT ─────────────────────── */
+.intercept-alert {
+  position: fixed;
+  bottom: 18px;
+  left: 18px;
+  z-index: 150;
+  max-width: 340px;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.intercept-alert.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.intercept-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 13px 15px;
+  background: color-mix(in srgb, var(--bg, #111214) 88%, transparent);
+  border: 1px solid rgba(200, 60, 54, 0.45);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35),
+              0 0 0 1px rgba(200, 60, 54, 0.1);
+  backdrop-filter: blur(14px);
+}
+.intercept-dot {
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  background: #c83c36;
+  border-radius: 50%;
+  margin-top: 3px;
+  box-shadow: 0 0 10px #c83c36;
+  animation: signalPulse 1.5s ease-in-out infinite;
+}
+.intercept-body { flex: 1; min-width: 0; }
+.intercept-title { font-family: 'DM Mono', monospace; color: var(--accent, #c83c36); font-size: 9px; letter-spacing: 0.12em; margin: 0 0 4px; }
+.intercept-msg   { font-family: 'DM Mono', monospace; color: var(--muted, #9a9690); font-size: 8px; letter-spacing: 0.05em; margin: 0; line-height: 1.6; }
+.intercept-close {
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  color: var(--muted, #9a9690);
+  font-size: 11px;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.2s;
+}
+.intercept-close:hover { color: var(--accent, #c83c36); }
+
+
+/* ─── SOUND TOGGLE ───────────────────────────────────────── */
+.sound-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line, rgba(238,233,223,.14));
+  background: var(--panel, #1a1b1d);
+  height: 34px;
+  padding: 0 11px;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--muted, #9a9690);
+  transition: color 0.3s, border-color 0.3s;
+}
+.sound-toggle[aria-pressed="true"] {
+  color: var(--accent, #c83c36);
+  border-color: rgba(200, 60, 54, 0.45);
+}
+.sound-toggle[aria-pressed="true"] .sound-icon {
+  animation: soundPulse 0.7s ease-in-out infinite alternate;
+}
+@keyframes soundPulse {
+  from { opacity: 0.7; }
+  to   { opacity: 1; color: var(--accent, #c83c36); }
+}
+.sound-label { font-size: 8px; }
+@media (max-width: 900px) { .sound-label { display: none; } }
+
+
+/* ─── MASK OVERLAY EASTER EGG ────────────────────────────── */
+.mask-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(6, 7, 8, 0.93);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.mask-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mask-overlay svg {
+  width: min(240px, 55vw);
+  height: auto;
+  filter: drop-shadow(0 0 32px rgba(200, 60, 54, 0.45));
+  animation: maskFloat 3.8s ease-in-out infinite;
+}
+@keyframes maskFloat {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50%       { transform: translateY(-14px) rotate(1.5deg); }
+}
+.mask-label { font-family: 'DM Mono', monospace; color: var(--accent, #c83c36); font-size: 9px; letter-spacing: 0.22em; }
+.mask-hint  { font-family: 'DM Mono', monospace; color: #333; font-size: 8px; letter-spacing: 0.15em; margin-top: 4px; }
+
+
+/* ─── BLUEPRINT MASK WATERMARK ───────────────────────────── */
+.blueprint-mask-wm {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0.42;
+}
+.blueprint-mask-wm svg { width: 52%; height: auto; }
+
+
+/* ─── SECTION WIPE TRANSITION BAR ───────────────────────── */
+.section-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 170;
+  background: var(--accent, #c83c36);
+  pointer-events: none;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+
+/* ─── TITLE GLITCH EFFECT ────────────────────────────────── */
+.title-main.is-glitching {
+  animation: titleGlitch 0.45s steps(2, end) !important;
+}
+@keyframes titleGlitch {
+  0%   { clip-path: inset(0 0 88% 0); transform: translateX(-4px); color: #c83c36; }
+  12%  { clip-path: inset(10% 0 68% 0); transform: translateX(4px); }
+  24%  { clip-path: inset(28% 0 48% 0); transform: translateX(-3px); color: var(--text, #eee9df); }
+  36%  { clip-path: inset(48% 0 28% 0); transform: translateX(3px); }
+  48%  { clip-path: inset(68% 0 8% 0);  transform: translateX(-2px); }
+  60%  { clip-path: inset(0); transform: translateX(0); }
+  72%  { clip-path: inset(0 0 80% 0); transform: translateX(2px) skewX(1.5deg); color: #c83c36; }
+  88%  { clip-path: inset(0); transform: translateX(0) skewX(0); }
+  100% { clip-path: inset(0); transform: translateX(0); color: var(--text, #eee9df); }
+}
+
+
+/* ─── SECTION ENTER STAMP ────────────────────────────────── */
+.scene-stamp {
+  position: absolute;
+  top: 96px;
+  right: 6vw;
+  font-family: 'Special Elite', serif;
+  font-size: 11px;
+  color: rgba(200, 60, 54, 0.14);
+  border: 2px solid rgba(200, 60, 54, 0.14);
+  padding: 7px 14px;
+  letter-spacing: 0.22em;
+  transform: rotate(-7deg);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease 0.45s;
+}
+.scene.in-view .scene-stamp { opacity: 1; }
+
+
+/* ─── ACTIVE NAV LINKS ───────────────────────────────────── */
+.quick-nav a.is-active  { color: var(--accent, #c83c36) !important; }
+.desktop-nav a.is-active { color: var(--text, #eee9df) !important; }
+
+
+/* ─── ENHANCED CREW CARD — SCAN LINE ON HOVER ────────────── */
+.crew-card { overflow: hidden; }
+.crew-card::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(200, 60, 54, 0.55), transparent);
+  top: -4px;
+  opacity: 0;
+  pointer-events: none;
+}
+.crew-card:hover::after {
+  animation: scanDown 0.75s ease forwards;
+}
+@keyframes scanDown {
+  from { top: 0; opacity: 0.9; }
+  to   { top: 100%; opacity: 0; }
+}
+
+
+/* ─── OBSTACLE CARD RED SIDE ACCENT GLOW ─────────────────── */
+.obstacle-card:hover {
+  box-shadow: -4px 0 20px rgba(200, 60, 54, 0.2), 0 16px 36px rgba(0,0,0,.12);
+}
+
+
+/* ─── VAULT DOOR SCROLL SPIN ─────────────────────────────── */
+#vaultDoor { will-change: transform; }
+
+
+/* ─── CASE STRINGS — reset for JS animation ─────────────── */
+/* JS will set stroke-dasharray / dashoffset per path */
+.case-strings path { opacity: 0.65; }
+
+
+/* ─── PARALLAX BOARD ELEMENTS ─────────────────────────────── */
+.pin, .plan-card, .mini-file, .board-note, .blueprint-mask-wm {
+  will-change: transform;
+}
+
+
+/* ─── REDUCED MOTION OVERRIDES ───────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .intro-logo,
+  .intro-mask,
+  .intro-static,
+  .mask-overlay svg,
+  .intercept-dot,
+  .sound-toggle .sound-icon,
+  .title-main.is-glitching,
+  .crew-card::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .intro-screen { transition: none !important; }
+  .mask-overlay { transition: none !important; }
+  .intercept-alert { transition: none !important; }
+  .custom-cursor, .cursor-dot { display: none !important; }
+  body { cursor: auto !important; }
+}

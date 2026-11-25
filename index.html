@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Special+Elite&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./enhancements.css">
   <script>
     (function () {
       try {
@@ -21,10 +22,121 @@
   </script>
 </head>
 <body>
+
+  <!-- ═══════════════════════════════════════════════════
+       CINEMATIC INTRO SCREEN
+       Plays once per session. Skip button always visible.
+  ═══════════════════════════════════════════════════ -->
+  <div class="intro-screen" id="introScreen" aria-hidden="true" role="presentation">
+    <div class="intro-static" aria-hidden="true"></div>
+    <div class="intro-scanlines" aria-hidden="true"></div>
+    <div class="intro-content">
+      <div class="intro-logo" aria-hidden="true">P.</div>
+      <div class="intro-mask" aria-hidden="true">
+        <!-- OG Dalí-inspired Money Heist mask — SVG drawn in-code, no image file needed -->
+        <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Dalí-inspired heist mask">
+          <!-- Face -->
+          <ellipse cx="100" cy="122" rx="82" ry="108" fill="#f0e6ce" stroke="#c83c36" stroke-width="1.5"/>
+          <!-- Forehead crease -->
+          <path d="M42 78 Q100 60 158 78" stroke="#c83c36" stroke-width="0.8" opacity="0.3"/>
+          <!-- Left eye socket -->
+          <ellipse cx="68" cy="108" rx="20" ry="15" fill="#e8dbc0" stroke="#c83c36" stroke-width="1"/>
+          <!-- Left pupil -->
+          <ellipse cx="68" cy="108" rx="10" ry="10" fill="#1c1a18"/>
+          <ellipse cx="65" cy="105" rx="3" ry="3" fill="white" opacity="0.55"/>
+          <!-- Right eye socket -->
+          <ellipse cx="132" cy="108" rx="20" ry="15" fill="#e8dbc0" stroke="#c83c36" stroke-width="1"/>
+          <!-- Right pupil -->
+          <ellipse cx="132" cy="108" rx="10" ry="10" fill="#1c1a18"/>
+          <ellipse cx="129" cy="105" rx="3" ry="3" fill="white" opacity="0.55"/>
+          <!-- Teardrop beneath left eye (iconic Dalí detail) -->
+          <path d="M68 126 Q62 136 68 146 Q74 136 68 126" fill="#c83c36"/>
+          <!-- Nose bridge hint -->
+          <path d="M90 145 Q100 160 110 145" stroke="#c83c36" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.4"/>
+          <!-- Mustache main arc -->
+          <path d="M72 178 Q100 163 128 178" stroke="#c83c36" stroke-width="3.5" stroke-linecap="round"/>
+          <!-- Left mustache curl -->
+          <path d="M72 178 Q57 185 54 173 Q51 161 63 158" stroke="#c83c36" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- Right mustache curl -->
+          <path d="M128 178 Q143 185 146 173 Q149 161 137 158" stroke="#c83c36" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <!-- Chin line -->
+          <path d="M78 215 Q100 228 122 215" stroke="#c83c36" stroke-width="0.8" opacity="0.28"/>
+        </svg>
+      </div>
+      <div class="intro-text">
+        <p class="intro-label mono" id="introStatus">SECURE CHANNEL · INITIATING</p>
+        <p class="intro-code mono" id="introCode">DECRYPTING FILE · MM—001</p>
+      </div>
+      <div class="intro-bar-wrap" aria-hidden="true">
+        <div class="intro-bar"><span id="introBarFill"></span></div>
+        <span class="intro-percent mono" id="introPercent">0%</span>
+      </div>
+    </div>
+    <button class="intro-skip mono" id="introSkip" type="button">SKIP BRIEFING ↘</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       INTERCEPTED TRANSMISSION ALERT
+       Appears ~7 s after page load, auto-dismisses.
+  ═══════════════════════════════════════════════════ -->
+  <div class="intercept-alert" id="interceptAlert" aria-live="assertive" aria-hidden="true" role="alert">
+    <div class="intercept-inner">
+      <span class="intercept-dot" aria-hidden="true"></span>
+      <div class="intercept-body">
+        <p class="intercept-title mono">⚡ CHANNEL INTERCEPTED</p>
+        <p class="intercept-msg mono">Visitor detected · File MM—001 accessed · Tracking initiated</p>
+      </div>
+      <button class="intercept-close mono" id="interceptClose" type="button" aria-label="Dismiss alert">✕</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       CUSTOM CURSOR — crosshair (desktop/pointer only)
+  ═══════════════════════════════════════════════════ -->
+  <div class="custom-cursor" id="customCursor" aria-hidden="true">
+    <div class="cursor-h"></div>
+    <div class="cursor-v"></div>
+    <div class="cursor-ring"></div>
+  </div>
+  <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MASK OVERLAY EASTER EGG
+       Triggered by triple-clicking the hero name,
+       hovering MISSION COMPLETE, or Konami code.
+  ═══════════════════════════════════════════════════ -->
+  <div class="mask-overlay" id="maskOverlay" aria-hidden="true">
+    <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Dalí heist mask">
+      <ellipse cx="100" cy="122" rx="82" ry="108" fill="#f0e6ce" stroke="#c83c36" stroke-width="2"/>
+      <ellipse cx="68" cy="108" rx="20" ry="15" fill="#e8dbc0" stroke="#c83c36" stroke-width="1.2"/>
+      <ellipse cx="68" cy="108" rx="10" ry="10" fill="#1c1a18"/>
+      <ellipse cx="65" cy="105" rx="3" ry="3" fill="white" opacity="0.55"/>
+      <ellipse cx="132" cy="108" rx="20" ry="15" fill="#e8dbc0" stroke="#c83c36" stroke-width="1.2"/>
+      <ellipse cx="132" cy="108" rx="10" ry="10" fill="#1c1a18"/>
+      <ellipse cx="129" cy="105" rx="3" ry="3" fill="white" opacity="0.55"/>
+      <path d="M68 126 Q62 136 68 146 Q74 136 68 126" fill="#c83c36"/>
+      <path d="M90 148 Q100 162 110 148" stroke="#c83c36" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.5"/>
+      <path d="M72 178 Q100 163 128 178" stroke="#c83c36" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M72 178 Q57 185 54 173 Q51 161 63 158" stroke="#c83c36" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M128 178 Q143 185 146 173 Q149 161 137 158" stroke="#c83c36" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M42 78 Q100 60 158 78" stroke="#c83c36" stroke-width="0.8" opacity="0.3"/>
+      <path d="M78 215 Q100 228 122 215" stroke="#c83c36" stroke-width="0.8" opacity="0.3"/>
+    </svg>
+    <p class="mask-label mono">THE PLAN · MM—001</p>
+    <p class="mask-hint mono">CLICK TO DISMISS</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       BASE PAGE FURNITURE (grain, glow, wash)
+  ═══════════════════════════════════════════════════ -->
   <div class="grain" aria-hidden="true"></div>
   <div class="cursor-glow" aria-hidden="true"></div>
   <div class="transition-wash" aria-hidden="true"></div>
+  <div class="section-wipe" id="sectionWipe" aria-hidden="true"></div>
 
+  <!-- ═══════════════════════════════════════════════════
+       TOPBAR — with new Sound Toggle button
+  ═══════════════════════════════════════════════════ -->
   <header class="topbar">
     <a class="brand" href="#briefing" aria-label="The Plan, back to top"><span class="brand-mark">P.</span><span>THE PLAN <i>/ MM.A</i></span></a>
     <nav class="desktop-nav" aria-label="Primary navigation">
@@ -32,15 +144,29 @@
     </nav>
     <div class="top-actions">
       <a class="nav-cta" href="#featured">View work <span>↗</span></a>
+      <!-- Sound Toggle -->
+      <button class="sound-toggle" id="soundToggle" type="button" aria-label="Toggle ambient sound" aria-pressed="false">
+        <span class="sound-icon" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+            <path d="M2 5H4L7 2V12L4 9H2V5Z" fill="currentColor"/>
+            <path d="M9.5 4.5C10.5 5.3 11 6.1 11 7C11 7.9 10.5 8.7 9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M11 2.5C12.7 3.9 13.5 5.3 13.5 7C13.5 8.7 12.7 10.1 11 11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span class="sound-label">SIGNAL</span>
+      </button>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch visual theme"><span class="toggle-orb"></span><span class="toggle-label">NIGHT JOB</span></button>
       <button class="menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileNav" aria-label="Open navigation"><span></span><span></span></button>
     </div>
   </header>
+
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
     <a href="#featured">Selected work</a><a href="#mastermind">About me</a><a href="#crew">Skills</a><a href="#obstacles">Challenges</a><a href="#getaway">Contact</a>
   </nav>
 
   <main>
+
+    <!-- ══════════════ 01 · HERO / BRIEFING ══════════════ -->
     <section class="scene hero" id="briefing" aria-labelledby="heroTitle">
       <div class="hero-grid"></div>
       <div class="hero-topline mono"><span><b class="status-dot"></b> SECURE CHANNEL ESTABLISHED</span><span class="mission-clock" id="missionClock">00:00:00</span><span>FILE NO. MM—001 / 2026</span></div>
@@ -56,6 +182,18 @@
           <div class="board-head mono"><span>OPERATION / MM-01</span><span class="board-live"><i></i> IN PROGRESS</span></div>
           <div class="blueprint">
             <div class="bp-cross cross-a"></div><div class="bp-cross cross-b"></div>
+            <!-- Mask watermark on the blueprint (blueprint ink colour, very subtle) -->
+            <div class="blueprint-mask-wm" aria-hidden="true">
+              <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="100" cy="122" rx="82" ry="108" stroke="#3d6078" stroke-width="1.5" opacity="0.45"/>
+                <ellipse cx="68" cy="108" rx="20" ry="15" stroke="#3d6078" stroke-width="1" opacity="0.4"/>
+                <ellipse cx="132" cy="108" rx="20" ry="15" stroke="#3d6078" stroke-width="1" opacity="0.4"/>
+                <path d="M68 126 Q62 136 68 146 Q74 136 68 126" fill="#3d6078" opacity="0.3"/>
+                <path d="M72 178 Q100 163 128 178" stroke="#3d6078" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+                <path d="M72 178 Q57 185 54 173 Q51 161 63 158" stroke="#3d6078" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+                <path d="M128 178 Q143 185 146 173 Q149 161 137 158" stroke="#3d6078" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.4"/>
+              </svg>
+            </div>
             <svg class="board-lines" viewBox="0 0 520 390" role="img" aria-label="Red route connecting project evidence pins">
               <path class="route route-base" d="M68 286 C120 244 112 150 202 162 S286 278 354 214 S402 105 460 82"/>
               <path class="route route-draw" d="M68 286 C120 244 112 150 202 162 S286 278 354 214 S402 105 460 82"/>
@@ -73,6 +211,7 @@
       <div class="hero-bottom mono"><span>SCROLL TO EXPLORE</span><span class="scroll-cue"><i></i></span><span>01 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 02 · SELECTED WORK ══════════════ -->
     <section class="scene featured-section" id="featured" aria-labelledby="featuredTitle">
       <div class="section-index mono">02 / SELECTED WORK</div>
       <div class="section-shell">
@@ -137,6 +276,7 @@
       <div class="section-foot mono"><span>SELECTED PROJECTS / 03</span><span>02 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 03 · ABOUT / MASTERMIND ══════════════ -->
     <section class="scene profile-section" id="mastermind" aria-labelledby="profileTitle">
       <div class="section-index mono">03 / ABOUT ME</div>
       <div class="section-shell profile-layout">
@@ -152,8 +292,10 @@
             </aside>
             <p>I'm an MCA student and Java-focused developer from Puducherry, interested in backend engineering, full-stack development and practical AI integration.</p>
             <p>I enjoy understanding how a system works beneath the interface — its data, its decisions, its security and the details that make it dependable.</p><p>AI Engineering Intern at Tri9T.</p>
-            <div class="redacted-line"><span>Long-term objective</span><b class="redaction">CLASSIFIED UNTIL BUILT</b></div><div class="redaction-stack" aria-label="Decorative redacted notes"><span></span><span></span><span></span></div><div class="mastermind-timeline" aria-label="Education and experience timeline"><svg viewBox="0 0 520 70" aria-hidden="true"><path class="timeline-string" d="M24 34 C110 4 170 64 260 34 S410 4 496 34"/></svg><span class="timeline-pin pin-a">EDUCATION</span><span class="timeline-pin pin-b">ENGINEERING</span><span class="timeline-pin pin-c">BUILDING</span></div>
-            <div class="education-stamps"><div><small class="mono">2025 — 2027</small><strong>MCA</strong><span>Sri Manakula Vinayagar Engineering College</span></div><div><small class="mono">2022 — 2025</small><strong>B.Sc. Computer Science</strong><span>SIGA College of Management and Computer Science</span></div></div><div class="profile-actions"><a class="button button-primary" href="./resume.pdf" download>Download resume <span>↓</span></a></div>
+            <div class="redacted-line"><span>Long-term objective</span><b class="redaction">CLASSIFIED UNTIL BUILT</b></div><div class="redaction-stack" aria-label="Decorative redacted notes"><span></span><span></span><span></span></div>
+            <div class="mastermind-timeline" aria-label="Education and experience timeline"><svg viewBox="0 0 520 70" aria-hidden="true"><path class="timeline-string" d="M24 34 C110 4 170 64 260 34 S410 4 496 34"/></svg><span class="timeline-pin pin-a">EDUCATION</span><span class="timeline-pin pin-b">ENGINEERING</span><span class="timeline-pin pin-c">BUILDING</span></div>
+            <div class="education-stamps"><div><small class="mono">2025 — 2027</small><strong>MCA</strong><span>Sri Manakula Vinayagar Engineering College</span></div><div><small class="mono">2022 — 2025</small><strong>B.Sc. Computer Science</strong><span>SIGA College of Management and Computer Science</span></div></div>
+            <div class="profile-actions"><a class="button button-primary" href="./resume.pdf" download>Download resume <span>↓</span></a></div>
           </div>
           <div class="notebook-bottom mono"><span>NOTES CONTINUE ON NEXT PAGE</span><span>MM / 01</span></div>
         </article>
@@ -161,6 +303,7 @@
       <div class="section-foot mono"><span>BACKGROUND CHECK / COMPLETE</span><span>03 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 04 · SKILLS / CREW ══════════════ -->
     <section class="scene crew-section" id="crew" aria-labelledby="crewTitle">
       <div class="section-index mono">04 / SKILLS</div>
       <div class="section-shell">
@@ -168,18 +311,18 @@
         <div class="laser-grid" aria-hidden="true"></div>
         <div class="crew-grid">
           <article class="crew-card crew-lead"><span class="crew-number mono">01 / CORE</span><div class="crew-icon">J<span>⌘</span></div><h3>Backend engineering</h3><p>Core Java · Spring Boot · REST APIs · JDBC · Maven</p><span class="crew-tag mono">PRIMARY FOCUS</span></article>
-          <article class="crew-card"><span class="crew-number mono">02 / INTERFACE</span><div class="crew-icon icon-lines">▤</div><h3>Web development</h3><p>React · JavaScript · TypeScript · HTML · CSS · Node.js</p><span class="crew-tag mono">BUILD & CONNECT</span></article>
-          <article class="crew-card"><span class="crew-number mono">03 / DATA</span><div class="crew-icon icon-data">◉</div><h3>Data & persistence</h3><p>PostgreSQL · MySQL · MongoDB · Redis</p><span class="crew-tag mono">STRUCTURE & STORE</span></article>
-          <article class="crew-card"><span class="crew-number mono">04 / DELIVERY</span><div class="crew-icon icon-delivery">↗</div><h3>Tools & delivery</h3><p>Git · GitHub · Docker · deployment workflows</p><span class="crew-tag mono">SHIP WITH CARE</span></article>
-          <article class="crew-card crew-wide"><span class="crew-number mono">05 / EXPLORATION</span><div class="crew-icon icon-ai">✳</div><h3>AI integration & system thinking</h3><p>Practical AI features, API integration, workflow automation and application architecture.</p><span class="crew-tag mono">LEARN · EXPERIMENT · APPLY</span></article>
+          <article class="crew-card"><span class="crew-number mono">02 / INTERFACE</span><div class="crew-icon icon-lines">▤</div><h3>Web development</h3><p>React · JavaScript · TypeScript · HTML · CSS · Node.js</p><span class="crew-tag mono">BUILD &amp; CONNECT</span></article>
+          <article class="crew-card"><span class="crew-number mono">03 / DATA</span><div class="crew-icon icon-data">◉</div><h3>Data &amp; persistence</h3><p>PostgreSQL · MySQL · MongoDB · Redis</p><span class="crew-tag mono">STRUCTURE &amp; STORE</span></article>
+          <article class="crew-card"><span class="crew-number mono">04 / DELIVERY</span><div class="crew-icon icon-delivery">↗</div><h3>Tools &amp; delivery</h3><p>Git · GitHub · Docker · deployment workflows</p><span class="crew-tag mono">SHIP WITH CARE</span></article>
+          <article class="crew-card crew-wide"><span class="crew-number mono">05 / EXPLORATION</span><div class="crew-icon icon-ai">✳</div><h3>AI integration &amp; system thinking</h3><p>Practical AI features, API integration, workflow automation and application architecture.</p><span class="crew-tag mono">LEARN · EXPERIMENT · APPLY</span></article>
         </div>
-        
       </div>
       <div class="section-foot mono"><span>ASSETS IDENTIFIED / 05</span><span>04 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 05 · OBSTACLES &amp; OBJECTS ══════════════ -->
     <section class="scene obstacles-section" id="obstacles" aria-labelledby="obstaclesTitle">
-      <div class="section-index mono">05 / OBSTACLES & OBJECTS</div>
+      <div class="section-index mono">05 / OBSTACLES &amp; OBJECTS</div>
       <div class="section-shell">
         <div class="obstacles-heading">
           <div><p class="eyebrow">THE PLAN · FIELD CHALLENGES</p><h2 id="obstaclesTitle">Every build has<br><em>obstacles.</em></h2></div>
@@ -220,49 +363,76 @@
       <div class="section-foot mono"><span>CHALLENGES MAPPED / 03</span><span>05 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 06 · PROJECTS / CASE FILES ══════════════ -->
     <section class="scene jobs-section" id="jobs" aria-labelledby="jobsTitle">
       <div class="section-index mono">06 / PROJECTS</div>
       <div class="section-shell">
         <div class="jobs-heading"><div><p class="eyebrow">PROJECTS · SELECTED WORK</p><h2 id="jobsTitle">Projects I've<br><em>worked on.</em></h2></div><div class="jobs-side-note mono"><span class="red-dot"></span> 5 PROJECTS / SELECTED WORK</div></div>
-        <div class="case-board"><svg class="case-strings" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true"><path d="M80 130 C260 20 350 230 500 170 S740 80 920 240"/><path d="M920 240 C800 370 660 310 500 460 S230 520 80 680"/><path d="M80 680 C300 800 600 720 920 830"/></svg><!-- TODO: Add this project's verified repository URL when available. --> <article class="case-file case-featured">
-            <div class="case-top mono"><span>PROJECT 01 / STUDENT PLATFORM</span><span class="case-status">LIVE</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div><div class="case-content"><div class="case-number">01</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><!-- Screenshot placeholder: set data-case-image to a file path such as assets/screenshots/project-name.png. --> <img data-case-image="" alt="INAI project screenshot" loading="lazy" decoding="async"></figure><h3>INAI</h3><p class="case-subtitle">Connect through learning</p><p class="case-summary">A platform where students can find learning partners based on shared subjects and skills. Both students must accept before a connection is made.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Skill-based matching · Privacy-aware connection flow</span></div><div><small class="mono">TECHNOLOGIES</small><span>HTML · CSS · JavaScript · Node.js · Express · MongoDB</span></div></div><div class="case-actions"><a href="https://inai-weld.vercel.app" target="_blank" rel="noreferrer">Open live project <span>↗</span></a></div></div></div><span class="case-pin"></span>
-          </article><!-- TODO: Add this project's verified repository URL when available. --> <article class="case-file">
-            <div class="case-top mono"><span>PROJECT 02 / CIVIC TECHNOLOGY</span><span class="case-status">FLAGSHIP</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div><div class="case-content"><div class="case-number">02</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><!-- Screenshot placeholder: set data-case-image to a file path such as assets/screenshots/project-name.png. --> <img data-case-image="" alt="Nirvaha project screenshot" loading="lazy" decoding="async"></figure><h3>Nirvaha</h3><p class="case-subtitle">From Report to Resolution</p><p class="case-summary">A platform for reporting local problems such as blocked drains and waterlogging. It helps organize reports, identify duplicates and track them through to resolution.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Trust → Intelligence → Action → Verification</span></div><div><small class="mono">TECHNOLOGIES</small><span>Spring Boot · React · PostgreSQL/PostGIS · Python AI service</span></div></div></div></div><span class="case-pin"></span>
-          </article><!-- TODO: Add this project's verified repository URL when available. --> <article class="case-file">
-            <div class="case-top mono"><span>PROJECT 03 / AI-ASSISTED SYSTEM</span><span>RESEARCH SYSTEM</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div><div class="case-content"><div class="case-number">03</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><!-- Screenshot placeholder: set data-case-image to a file path such as assets/screenshots/project-name.png. --> <img data-case-image="" alt="CrimeLens OS project screenshot" loading="lazy" decoding="async"></figure><h3>CrimeLens OS</h3><p class="case-summary">An AI-assisted concept that helps investigators spot possible connections between complaints and review related information.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Complaint context · Pattern analysis · Investigation support</span></div><div><small class="mono">TECHNOLOGIES</small><span>Gemini · SCRB memory concept · Kannada-language workflow</span></div></div></div></div><span class="case-pin"></span>
-          </article><!-- TODO: Add this project's verified repository URL when available. --> <article class="case-file">
-            <div class="case-top mono"><span>PROJECT 04 / RESERVATION SYSTEM</span><span>WEB APPLICATION</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div><div class="case-content"><div class="case-number">04</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><!-- Screenshot placeholder: set data-case-image to a file path such as assets/screenshots/project-name.png. --> <img data-case-image="" alt="SentinelGrid project screenshot" loading="lazy" decoding="async"></figure><h3>SentinelGrid</h3><p class="case-summary">A reservation and operations application with separate workspaces for different user roles, secure access and coordinated tasks.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Reservation flow · Role-based workspaces · Access control</span></div><div><small class="mono">TECHNOLOGIES</small><span>React · Spring Boot · JWT · PostgreSQL · Redis · Docker</span></div></div></div></div><span class="case-pin"></span>
-          </article><!-- TODO: Add this project's verified repository URL when available. --> <article class="case-file">
-            <div class="case-top mono"><span>PROJECT 05 / WORKFLOW PROTOTYPE</span><span>PROTOTYPE</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div><div class="case-content"><div class="case-number">05</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><!-- Screenshot placeholder: set data-case-image to a file path such as assets/screenshots/project-name.png. --> <img data-case-image="" alt="OpsCommand project screenshot" loading="lazy" decoding="async"></figure><h3>OpsCommand</h3><p class="case-summary">A prototype that connects office and field work, including orders, inventory, technician assignments and digital job sheets.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Connect office operations with field execution</span></div><div><small class="mono">TECHNOLOGIES</small><span>Replit-based prototype · Workflow design · RBAC</span></div></div></div></div><span class="case-pin"></span>
-          </article></div>
+        <div class="case-board">
+          <svg class="case-strings" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M80 130 C260 20 350 230 500 170 S740 80 920 240"/>
+            <path d="M920 240 C800 370 660 310 500 460 S230 520 80 680"/>
+            <path d="M80 680 C300 800 600 720 920 830"/>
+          </svg>
+          <article class="case-file case-featured">
+            <div class="case-top mono"><span>PROJECT 01 / STUDENT PLATFORM</span><span class="case-status">LIVE</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div>
+            <div class="case-content"><div class="case-number">01</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><img data-case-image="" alt="INAI project screenshot" loading="lazy" decoding="async"></figure><h3>INAI</h3><p class="case-subtitle">Connect through learning</p><p class="case-summary">A platform where students can find learning partners based on shared subjects and skills. Both students must accept before a connection is made.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Skill-based matching · Privacy-aware connection flow</span></div><div><small class="mono">TECHNOLOGIES</small><span>HTML · CSS · JavaScript · Node.js · Express · MongoDB</span></div></div><div class="case-actions"><a href="https://inai-weld.vercel.app" target="_blank" rel="noreferrer">Open live project <span>↗</span></a></div></div></div>
+            <span class="case-pin"></span>
+          </article>
+          <article class="case-file">
+            <div class="case-top mono"><span>PROJECT 02 / CIVIC TECHNOLOGY</span><span class="case-status">FLAGSHIP</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div>
+            <div class="case-content"><div class="case-number">02</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><img data-case-image="" alt="Nirvaha project screenshot" loading="lazy" decoding="async"></figure><h3>Nirvaha</h3><p class="case-subtitle">From Report to Resolution</p><p class="case-summary">A platform for reporting local problems such as blocked drains and waterlogging. It helps organize reports, identify duplicates and track them through to resolution.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Trust → Intelligence → Action → Verification</span></div><div><small class="mono">TECHNOLOGIES</small><span>Spring Boot · React · PostgreSQL/PostGIS · Python AI service</span></div></div></div></div>
+            <span class="case-pin"></span>
+          </article>
+          <article class="case-file">
+            <div class="case-top mono"><span>PROJECT 03 / AI-ASSISTED SYSTEM</span><span>RESEARCH SYSTEM</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div>
+            <div class="case-content"><div class="case-number">03</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><img data-case-image="" alt="CrimeLens OS project screenshot" loading="lazy" decoding="async"></figure><h3>CrimeLens OS</h3><p class="case-summary">An AI-assisted concept that helps investigators spot possible connections between complaints and review related information.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Complaint context · Pattern analysis · Investigation support</span></div><div><small class="mono">TECHNOLOGIES</small><span>Gemini · SCRB memory concept · Kannada-language workflow</span></div></div></div></div>
+            <span class="case-pin"></span>
+          </article>
+          <article class="case-file">
+            <div class="case-top mono"><span>PROJECT 04 / RESERVATION SYSTEM</span><span>WEB APPLICATION</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div>
+            <div class="case-content"><div class="case-number">04</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><img data-case-image="" alt="SentinelGrid project screenshot" loading="lazy" decoding="async"></figure><h3>SentinelGrid</h3><p class="case-summary">A reservation and operations application with separate workspaces for different user roles, secure access and coordinated tasks.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Reservation flow · Role-based workspaces · Access control</span></div><div><small class="mono">TECHNOLOGIES</small><span>React · Spring Boot · JWT · PostgreSQL · Redis · Docker</span></div></div></div></div>
+            <span class="case-pin"></span>
+          </article>
+          <article class="case-file">
+            <div class="case-top mono"><span>PROJECT 05 / WORKFLOW PROTOTYPE</span><span>PROTOTYPE</span><button class="safe-dial" type="button" aria-label="Open this case file" aria-expanded="false"><span></span></button></div>
+            <div class="case-content"><div class="case-number">05</div><div class="case-info"><div class="case-open-stamp" aria-hidden="true">CASE OPEN</div><figure class="case-screenshot" hidden><img data-case-image="" alt="OpsCommand project screenshot" loading="lazy" decoding="async"></figure><h3>OpsCommand</h3><p class="case-summary">A prototype that connects office and field work, including orders, inventory, technician assignments and digital job sheets.</p><div class="case-meta"><div><small class="mono">OVERVIEW</small><span>Connect office operations with field execution</span></div><div><small class="mono">TECHNOLOGIES</small><span>Replit-based prototype · Workflow design · RBAC</span></div></div></div></div>
+            <span class="case-pin"></span>
+          </article>
+        </div>
         <p class="jobs-disclaimer mono">SELECT A PROJECT TO EXPLORE</p>
       </div>
       <div class="section-foot mono"><span>CASE FILES / 05</span><span>06 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 07 · LEARNING ══════════════ -->
     <section class="scene special-section" id="special" aria-labelledby="specialTitle">
-      <div class="section-index mono">07 / LEARNING & EXPERIMENTS</div>
+      <div class="section-index mono">07 / LEARNING &amp; EXPERIMENTS</div>
       <div class="section-shell special-layout">
         <div><p class="eyebrow">LEARNING · GOOGLE CLOUD GEN AI ACADEMY</p><h2 id="specialTitle">Learning<br>new <em>things.</em></h2><p class="section-intro">Hands-on experiments with AI assistants, data analysis and connected workflows.</p><div class="academy-mark"><span>G</span><div><b>GEN AI ACADEMY</b><small class="mono">APAC · COHORT 3 / 2026</small></div></div></div>
-        <div class="special-right"><div class="field-map" aria-label="Route connecting three learning experiments"><svg viewBox="0 0 600 170" role="img" aria-label="A route connecting three field experiment markers"><path class="field-route-base" d="M35 120 C120 120 120 35 250 55 S410 140 565 35"/><path class="field-route-draw" d="M35 120 C120 120 120 35 250 55 S410 140 565 35"/><circle cx="35" cy="120" r="7"/><circle cx="250" cy="55" r="7"/><circle cx="565" cy="35" r="7"/></svg><div class="field-map-labels mono"><span>01 / AGENTS</span><span>02 / DATA</span><span>03 / WORKFLOWS</span></div><span class="route-marker" aria-hidden="true"></span></div>
-        <div class="operation-list">
-          <article class="operation-item"><span class="operation-index mono">OP / 01</span><div><h3>AI Barista</h3><p>Explored an assistant workflow using Google ADK, Gemini and retrieval-augmented generation concepts.</p><small class="mono">AGENT DEVELOPMENT · RAG</small></div><span class="operation-arrow">↗</span></article>
-          <article class="operation-item"><span class="operation-index mono">OP / 02</span><div><h3>BigQuery Data Agent</h3><p>Explored conversational data analysis and agent-assisted interaction with analytical data.</p><small class="mono">BIGQUERY · DATA ANALYTICS</small></div><span class="operation-arrow">↗</span></article>
-          <article class="operation-item"><span class="operation-index mono">OP / 03</span><div><h3>Coffee Shop Manager</h3><p>Explored an assistant workflow connecting business information with Google Sheets and human approval.</p><small class="mono">GOOGLE SHEETS · HUMAN-IN-THE-LOOP</small></div><span class="operation-arrow">↗</span></article>
-        </div><div class="radio-wave" aria-label="Decorative radio transmission waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="special-right">
+          <div class="field-map" aria-label="Route connecting three learning experiments"><svg viewBox="0 0 600 170" role="img" aria-label="A route connecting three field experiment markers"><path class="field-route-base" d="M35 120 C120 120 120 35 250 55 S410 140 565 35"/><path class="field-route-draw" d="M35 120 C120 120 120 35 250 55 S410 140 565 35"/><circle cx="35" cy="120" r="7"/><circle cx="250" cy="55" r="7"/><circle cx="565" cy="35" r="7"/></svg><div class="field-map-labels mono"><span>01 / AGENTS</span><span>02 / DATA</span><span>03 / WORKFLOWS</span></div><span class="route-marker" aria-hidden="true"></span></div>
+          <div class="operation-list">
+            <article class="operation-item"><span class="operation-index mono">OP / 01</span><div><h3>AI Barista</h3><p>Explored an assistant workflow using Google ADK, Gemini and retrieval-augmented generation concepts.</p><small class="mono">AGENT DEVELOPMENT · RAG</small></div><span class="operation-arrow">↗</span></article>
+            <article class="operation-item"><span class="operation-index mono">OP / 02</span><div><h3>BigQuery Data Agent</h3><p>Explored conversational data analysis and agent-assisted interaction with analytical data.</p><small class="mono">BIGQUERY · DATA ANALYTICS</small></div><span class="operation-arrow">↗</span></article>
+            <article class="operation-item"><span class="operation-index mono">OP / 03</span><div><h3>Coffee Shop Manager</h3><p>Explored an assistant workflow connecting business information with Google Sheets and human approval.</p><small class="mono">GOOGLE SHEETS · HUMAN-IN-THE-LOOP</small></div><span class="operation-arrow">↗</span></article>
+          </div>
+          <div class="radio-wave" aria-label="Decorative radio transmission waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
       </div>
       <div class="section-foot mono"><span>EXPERIMENTS / LEARNING IN PUBLIC</span><span>07 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 08 · VAULT / ACHIEVEMENTS ══════════════ -->
     <section class="scene vault-section" id="vault" aria-labelledby="vaultTitle">
       <div class="section-index mono">08 / ACHIEVEMENTS</div>
       <div class="section-shell">
-        <div class="vault-heading"><div><p class="eyebrow">AWARDS · CERTIFICATIONS</p><h2 id="vaultTitle">Milestones &<br><em>certificates.</em></h2></div><p class="section-intro">Selected milestones and professional learning.</p></div>
+        <div class="vault-heading"><div><p class="eyebrow">AWARDS · CERTIFICATIONS</p><h2 id="vaultTitle">Milestones &amp;<br><em>certificates.</em></h2></div><p class="section-intro">Selected milestones and professional learning.</p></div>
         <div class="vault-door-wrap">
-          <div class="vault-door" aria-hidden="true"><div class="vault-ring ring-outer"></div><div class="vault-ring ring-inner"></div><div class="vault-hub">MM</div><div class="vault-spoke spoke-a"></div><div class="vault-spoke spoke-b"></div><div class="vault-spoke spoke-c"></div><div class="vault-spoke spoke-d"></div><span class="vault-bolt bolt-a"></span><span class="vault-bolt bolt-b"></span><span class="vault-bolt bolt-c"></span><span class="vault-bolt bolt-d"></span></div>
+          <div class="vault-door" id="vaultDoor" aria-hidden="true"><div class="vault-ring ring-outer"></div><div class="vault-ring ring-inner"></div><div class="vault-hub">MM</div><div class="vault-spoke spoke-a"></div><div class="vault-spoke spoke-b"></div><div class="vault-spoke spoke-c"></div><div class="vault-spoke spoke-d"></div><span class="vault-bolt bolt-a"></span><span class="vault-bolt bolt-b"></span><span class="vault-bolt bolt-c"></span><span class="vault-bolt bolt-d"></span></div>
           <div class="vault-groups">
-            <section class="vault-group" aria-labelledby="milestonesTitle"><h3 class="vault-group-title" id="milestonesTitle">Milestones</h3><div class="vault-records"><article class="vault-record"><span class="record-type mono">MILESTONE / 01</span><h3>VBYLD ’25</h3><p>State Champion · National participant</p></article><article class="vault-record"><span class="record-type mono">MILESTONE / 02</span><h3>VBYLD 2027</h3><p>Selected for the essay stage</p></article></div></section>
-            <section class="vault-group" aria-labelledby="certificationsTitle"><h3 class="vault-group-title" id="certificationsTitle">Certifications</h3><div class="vault-records"><article class="vault-record"><span class="record-type mono">CERTIFICATION</span><h3>Cisco Python Essentials</h3><p>Python Essentials 1 & 2</p></article><article class="vault-record"><span class="record-type mono">CERTIFICATION</span><h3>Neo4j</h3><p>Cypher Fundamentals</p></article><article class="vault-record"><span class="record-type mono">CERTIFICATION</span><h3>Adobe · Accenture · HP LIFE</h3><p>UX Foundation, cybersecurity, AI and data learning credentials</p></article></div></section>
+            <section class="vault-group" aria-labelledby="milestonesTitle"><h3 class="vault-group-title" id="milestonesTitle">Milestones</h3><div class="vault-records"><article class="vault-record"><span class="record-type mono">MILESTONE / 01</span><h3>VBYLD '25</h3><p>State Champion · National participant</p></article><article class="vault-record"><span class="record-type mono">MILESTONE / 02</span><h3>VBYLD 2027</h3><p>Selected for the essay stage</p></article></div></section>
+            <section class="vault-group" aria-labelledby="certificationsTitle"><h3 class="vault-group-title" id="certificationsTitle">Certifications</h3><div class="vault-records"><article class="vault-record"><span class="record-type mono">CERTIFICATION</span><h3>Cisco Python Essentials</h3><p>Python Essentials 1 &amp; 2</p></article><article class="vault-record"><span class="record-type mono">CERTIFICATION</span><h3>Neo4j</h3><p>Cypher Fundamentals</p></article><article class="vault-record"><span class="record-type mono">CERTIFICATION</span><h3>Adobe · Accenture · HP LIFE</h3><p>UX Foundation, cybersecurity, AI and data learning credentials</p></article></div></section>
           </div>
         </div>
         <form class="vault-keypad" id="vaultKeypad" aria-labelledby="keypadTitle">
@@ -291,15 +461,25 @@
       <div class="section-foot mono"><span>ARCHIVE / SELECTED RECORDS</span><span>08 — 09</span></div>
     </section>
 
+    <!-- ══════════════ 09 · GETAWAY / CONTACT ══════════════ -->
     <section class="scene getaway-section" id="getaway" aria-labelledby="getawayTitle">
       <div class="getaway-grid"></div><div class="section-index mono">09 / CONTACT</div>
       <div class="section-shell getaway-layout">
         <div><p class="eyebrow"><span class="status-dot"></span> LET'S CONNECT</p><h2 id="getawayTitle">Let's build<br><em>something.</em></h2><p class="getaway-copy">Open to developer opportunities, internships and interesting projects. Feel free to get in touch.</p><div class="contact-actions"><a class="button button-primary" href="mailto:mappillaimeeran32@gmail.com">Contact me <span>↗</span></a><a class="button button-outline" href="https://www.linkedin.com/in/mappillaimeeran/" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a></div></div>
-        <div class="getaway-right"><div class="getaway-route" aria-label="Blueprint route to the exit"><svg viewBox="0 0 480 180" role="img" aria-label="Route from the archive to the exit"><path class="getaway-route-base" d="M15 140 C110 140 100 45 210 75 S340 150 465 28"/><path class="getaway-route-draw" d="M15 140 C110 140 100 45 210 75 S340 150 465 28"/><circle cx="15" cy="140" r="6"/><circle cx="465" cy="28" r="8"/></svg><span class="exit-label mono">EXIT / CONTACT</span></div>
-        <div class="mission-complete"><div class="complete-stamp">MISSION<br>COMPLETE</div><p class="mono">TRANSMISSION READY · <span id="finalCountdown">10</span> SEC</p><span>GitHub <a href="https://github.com/Mappillai-Meeran" target="_blank" rel="noreferrer">@Mappillai-Meeran ↗</a></span><span>LinkedIn <a href="https://www.linkedin.com/in/mappillaimeeran/" target="_blank" rel="noreferrer">/mappillaimeeran ↗</a></span><span>Email <a href="mailto:mappillaimeeran32@gmail.com">mappillaimeeran32@gmail.com ↗</a></span></div></div>
+        <div class="getaway-right">
+          <div class="getaway-route" aria-label="Blueprint route to the exit"><svg viewBox="0 0 480 180" role="img" aria-label="Route from the archive to the exit"><path class="getaway-route-base" d="M15 140 C110 140 100 45 210 75 S340 150 465 28"/><path class="getaway-route-draw" d="M15 140 C110 140 100 45 210 75 S340 150 465 28"/><circle cx="15" cy="140" r="6"/><circle cx="465" cy="28" r="8"/></svg><span class="exit-label mono">EXIT / CONTACT</span></div>
+          <div class="mission-complete">
+            <div class="complete-stamp" id="missionStamp" title="Hover for a surprise 🎭">MISSION<br>COMPLETE</div>
+            <p class="mono">TRANSMISSION READY · <span id="finalCountdown">10</span> SEC</p>
+            <span>GitHub <a href="https://github.com/Mappillai-Meeran" target="_blank" rel="noreferrer">@Mappillai-Meeran ↗</a></span>
+            <span>LinkedIn <a href="https://www.linkedin.com/in/mappillaimeeran/" target="_blank" rel="noreferrer">/mappillaimeeran ↗</a></span>
+            <span>Email <a href="mailto:mappillaimeeran32@gmail.com">mappillaimeeran32@gmail.com ↗</a></span>
+          </div>
+        </div>
       </div>
       <footer class="site-footer mono"><span>THE PLAN / MAPPILLAI MEERAN A</span><span>BUILT WITH INTENTION · 2026</span><a href="#briefing">BACK TO THE BRIEF ↑</a></footer>
     </section>
+
   </main>
 
   <div class="quick-nav" aria-label="Quick section navigation"><span class="quick-label mono">QUICK LINKS</span><a href="#featured">WORK</a><a href="#jobs">ARCHIVE</a><a href="#mastermind">ABOUT</a><a href="#getaway">CONTACT</a></div>
@@ -310,5 +490,6 @@
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/bundled/lenis.min.js"></script>
   <script src="./script.js"></script>
+  <script src="./enhancements.js"></script>
 </body>
 </html>
