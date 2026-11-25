@@ -2,7 +2,7 @@ name: Deploy The Plan to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, mappillai-meeran-money-heist-portfolio]
   workflow_dispatch:
 
 permissions:
