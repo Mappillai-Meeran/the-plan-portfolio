@@ -11,7 +11,7 @@
     revealY: 22,
     mobileBreakpoint: 720,
     accent: '#c83c36',
-    keypadCode: '2468', // Replace with your preferred four-digit code.
+    keypadCode: '2468', // Playful frontend easter egg only; never use as real access control.
     clockTimeZone: 'Asia/Kolkata'
   };
 
@@ -48,7 +48,7 @@
   });
 
   // Typewriter intro: the line and name are typed in sequence.
-  const typeTargets = $('[data-typewriter]');
+  const typeTargets = $$('[data-typewriter]');
   if (typeTargets.length) {
     if (reduceMotion) {
       typeTargets.forEach(el => { el.textContent = el.dataset.typewriter; });
@@ -71,6 +71,43 @@
       };
       typeTargets.forEach((el, index) => typeOne(el, index * 1150 + 450));
     }
+  }
+
+  // Resolve each intro glyph once for a short scramble effect without flicker.
+  if (!reduceMotion) {
+    const scrambleAlphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    $$('[data-scramble]').forEach((element) => {
+      const fullText = element.dataset.scramble || element.textContent;
+      const heading = element.closest('h1');
+      if (heading) heading.setAttribute('aria-label', fullText);
+      element.textContent = '';
+      const glyphs = [];
+      fullText.split(/(\s+)/).forEach((part) => {
+        if (/^\s+$/.test(part)) {
+          element.append(document.createTextNode(part));
+          return;
+        }
+        const word = document.createElement('span');
+        word.className = 'scramble-word';
+        Array.from(part).forEach((character) => {
+          const glyph = document.createElement('span');
+          glyph.className = 'scramble-char';
+          glyph.textContent = scrambleAlphabet[Math.floor(Math.random() * scrambleAlphabet.length)];
+          word.append(glyph);
+          glyphs.push({ glyph, character });
+        });
+        element.append(word);
+      });
+      let index = 0;
+      const resolveNext = () => {
+        if (index >= glyphs.length) return;
+        glyphs[index].glyph.textContent = glyphs[index].character;
+        glyphs[index].glyph.classList.add('is-decoded');
+        index += 1;
+        window.setTimeout(resolveNext, 42);
+      };
+      window.setTimeout(resolveNext, 260);
+    });
   }
 
   function setTheme(nextTheme) {
@@ -133,8 +170,14 @@
   $$('#mobileNav a').forEach(link => link.addEventListener('click', closeMenu));
   window.addEventListener('resize', () => { if (!isMobile()) closeMenu(); }, { passive: true });
 
-  $('#skipIntro').addEventListener('click', () => {
-    const destination = isMobile() ? '#jobs' : '#jobs';
+  const skipIntro = $('#skipIntro');
+  const updateSkipIntroVisibility = () => {
+    skipIntro.classList.toggle('is-hidden', window.scrollY > $('.hero').offsetHeight * .65);
+  };
+  window.addEventListener('scroll', updateSkipIntroVisibility, { passive: true });
+  updateSkipIntroVisibility();
+  skipIntro.addEventListener('click', () => {
+    const destination = '#featured';
     if (window.lenisInstance) window.lenisInstance.scrollTo(destination, { offset: -30, duration: 1.35 });
     else document.querySelector(destination).scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
   });
@@ -201,16 +244,25 @@
       heroTimeline
         .to('.hero-copy', { y: -34, opacity: .45, ease: 'power2.inOut' }, 0)
         .to('.hero-board', { y: -54, rotate: -1.5, scale: .96, ease: 'power2.inOut' }, 0)
-        .to('.door-frame', { x: 35, opacity: 0, ease: 'power2.inOut' }, 0)
         .to('.hero-grid', { opacity: .25, ease: 'sine.inOut' }, 0);
     }
 
     // Section entrances: measured movement, no layout properties animated.
-    $$('.crew-card').forEach((card, index) => {
-      gsap.fromTo(card, { y: 28, opacity: 0 }, {
-        y: 0, opacity: 1, duration: .85, ease: 'power2.out', delay: index * .07,
-        scrollTrigger: { trigger: card, start: 'top 92%', once: true }
+    $$('.featured-card').forEach((card, index) => {
+      gsap.fromTo(card, { y: 26, opacity: 0 }, {
+        y: 0, opacity: 1, duration: .8, ease: 'power2.out', delay: index * .1,
+        scrollTrigger: { trigger: card, start: 'top 90%', once: true }
       });
+    });
+    $$('.obstacle-card').forEach((card, index) => {
+      gsap.fromTo(card, { y: 34, opacity: 0, rotate: index % 2 ? 1.5 : -1.5 }, {
+        y: 0, opacity: 1, rotate: 0, duration: .9, ease: 'power2.out', delay: index * .12,
+        scrollTrigger: { trigger: card, start: 'top 88%', once: true }
+      });
+    });
+    gsap.fromTo('.obstacle-route', { scaleX: 0 }, {
+      scaleX: 1, transformOrigin: 'left center', ease: 'none',
+      scrollTrigger: { trigger: '.obstacle-route', start: 'top 85%', end: 'bottom 60%', scrub: CONFIG.scrub }
     });
     $$('.case-file').forEach((card, index) => {
       gsap.fromTo(card, { y: 35, opacity: 0, rotate: index % 2 ? 1.8 : -1.8 }, {
@@ -218,13 +270,6 @@
         scrollTrigger: { trigger: card, start: 'top 88%', once: true }
       });
     });
-    $$('.operation-item, .vault-record').forEach((item, index) => {
-      gsap.fromTo(item, { x: index % 2 ? 18 : -18, opacity: 0 }, {
-        x: 0, opacity: 1, duration: .9, ease: 'power2.out',
-        scrollTrigger: { trigger: item, start: 'top 90%', once: true }
-      });
-    });
-
     // One global reading-progress indicator.
     gsap.to('.scroll-progress span', {
       scaleX: 1, ease: 'none',
@@ -264,23 +309,68 @@
   updateMissionClock();
   const clockTimer = window.setInterval(updateMissionClock, 1000);
 
-  // Optional four-digit vault easter egg. No content is gated by it.
-  const keypad = $('.vault-keypad'), keypadDisplay = $('#keypadDisplay'), keypadFeedback = $('#keypadFeedback');
+  // This frontend-only puzzle is optional; the portfolio stays fully readable without it.
+  const keypad = $('#vaultKeypad');
+  const keypadInput = $('#keypadInput');
+  const keypadFeedback = $('#keypadFeedback');
+  const celebration = $('#vaultCelebration');
   let keypadEntry = '';
-  if (keypad) keypad.addEventListener('click', (event) => {
-    const key = event.target.closest('[data-key]');
-    if (!key || keypad.classList.contains('unlocked')) return;
-    const value = key.dataset.key;
-    if (value === 'clear') keypadEntry = '';
-    else if (value === 'enter') {
-      if (keypadEntry === CONFIG.keypadCode) {
-        keypad.classList.add('unlocked');
-        keypadFeedback.textContent = 'Vault unlocked. The archive was open all along.';
-        if (!reduceMotion && window.gsap) gsap.fromTo('.vault-celebration', { scale: .8, opacity: 0 }, { scale: 1, opacity: 1, duration: .65, ease: 'back.out(1.8)' });
-      } else { keypadFeedback.textContent = 'Not quite. Try again, or skip this optional check.'; keypadEntry = ''; }
-    } else if (keypadEntry.length < 4) keypadEntry += value;
-    keypadDisplay.textContent = keypadEntry.padEnd(4, '_').split('').join(' ');
-  });
+  let keypadObserver = null;
+  if (keypad) {
+    if ('IntersectionObserver' in window) {
+      keypadObserver = new IntersectionObserver(([entry]) => {
+        document.body.classList.toggle('keypad-in-view', entry.isIntersecting);
+      }, { threshold: .05 });
+      keypadObserver.observe(keypad);
+    }
+
+    keypadInput.addEventListener('input', () => {
+      keypadEntry = keypadInput.value.replace(/\D/g, '').slice(0, 4);
+      keypadInput.value = keypadEntry;
+      keypadInput.removeAttribute('aria-invalid');
+    });
+
+    keypad.addEventListener('click', (event) => {
+      const key = event.target.closest('[data-key]');
+      if (!key || keypad.classList.contains('unlocked')) return;
+      const value = key.dataset.key;
+      keypadInput.removeAttribute('aria-invalid');
+      if (value === 'clear') {
+        keypadEntry = '';
+        keypadFeedback.textContent = 'Code cleared. Enter the four digits from the clue.';
+      } else if (/^\d$/.test(value) && keypadEntry.length < 4) {
+        keypadEntry += value;
+        keypadFeedback.textContent = `${keypadEntry.length} of 4 digits entered.`;
+      }
+      keypadInput.value = keypadEntry;
+    });
+
+    keypad.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (keypad.classList.contains('unlocked')) return;
+      if (keypadEntry !== CONFIG.keypadCode) {
+        keypadFeedback.textContent = keypadEntry
+          ? 'That sequence is not quite right. Re-read the personnel-file clue and try again.'
+          : 'Enter the four digits from the personnel-file clue.';
+        keypadInput.setAttribute('aria-invalid', 'true');
+        keypadEntry = '';
+        keypadInput.value = '';
+        keypadInput.focus();
+        return;
+      }
+
+      keypad.classList.add('unlocked');
+      keypadFeedback.textContent = 'Secret note unlocked. The rest of the portfolio was always open.';
+      keypad.querySelectorAll('button, input').forEach((control) => { control.disabled = true; });
+      celebration.hidden = false;
+      if (!reduceMotion && window.gsap) {
+        gsap.fromTo(celebration, { scale: .88, opacity: 0, y: 12 }, {
+          scale: 1, opacity: 1, y: 0, duration: .75, ease: 'back.out(1.7)'
+        });
+      }
+      $('#secretTitle').focus();
+    });
+  }
 
   // Case-file safe dials: click or tap to reveal a stamp.
   $$('.case-file').forEach((card) => {
@@ -309,23 +399,9 @@
   // One GSAP ticker remains the only Lenis driver. These timelines subscribe
   // to ScrollTrigger and animate transforms, opacity and SVG stroke offsets.
   if (!reduceMotion && window.gsap && window.ScrollTrigger) {
-    gsap.to('.security-door-panel', { rotateY: -72, ease: 'power2.inOut', scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=65%', scrub: CONFIG.scrub } });
-    gsap.to('.security-door', { opacity: .15, y: 35, ease: 'sine.inOut', scrollTrigger: { trigger: '.hero', start: 'top top', end: '+=80%', scrub: CONFIG.scrub } });
-    gsap.to('.security-camera', { rotate: 24, ease: 'sine.inOut', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: CONFIG.scrub } });
-    gsap.to('.notebook-page-edge', { rotateY: -24, transformOrigin: 'right center', ease: 'power2.inOut', scrollTrigger: { trigger: '.profile-section', start: 'top 70%', end: 'bottom 45%', scrub: CONFIG.scrub } });
-    gsap.to('.redaction-stack span', { scaleX: 0, opacity: .25, stagger: .2, ease: 'power2.inOut', scrollTrigger: { trigger: '.redaction-stack', start: 'top 80%', end: 'bottom 40%', scrub: CONFIG.scrub } });
-    gsap.to('.timeline-string', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.mastermind-timeline', start: 'top 90%', end: 'bottom 50%', scrub: CONFIG.scrub } });
-    gsap.to('.laser-grid', { x: 35, y: -20, ease: 'none', scrollTrigger: { trigger: '.crew-section', start: 'top bottom', end: 'bottom top', scrub: CONFIG.scrub } });
-    gsap.to('.case-strings path', { strokeDashoffset: -120, ease: 'none', scrollTrigger: { trigger: '.case-board', start: 'top 85%', end: 'bottom 20%', scrub: CONFIG.scrub } });
-    gsap.to('.safe-dial span', { rotate: 360, ease: 'none', scrollTrigger: { trigger: '.case-board', start: 'top 85%', end: 'bottom 20%', scrub: CONFIG.scrub } });
     gsap.to('.field-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.field-map', start: 'top 90%', end: 'bottom 35%', scrub: CONFIG.scrub } });
     gsap.to('.route-marker', { x: () => Math.max(0, $('.field-map').clientWidth - 45), y: -58, ease: 'none', scrollTrigger: { trigger: '.field-map', start: 'top 90%', end: 'bottom 35%', scrub: CONFIG.scrub } });
-    gsap.to('.vault-door', { rotate: 162, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 80%', end: 'center center', scrub: CONFIG.scrub } });
-    gsap.to('.vault-bolt', { x: (index) => index % 2 ? 10 : -10, opacity: .25, stagger: .04, ease: 'power2.inOut', scrollTrigger: { trigger: '.vault-door-wrap', start: 'top 65%', end: 'center 35%', scrub: CONFIG.scrub } });
     gsap.to('.getaway-route-draw', { strokeDashoffset: 0, ease: 'none', scrollTrigger: { trigger: '.getaway-route', start: 'top 90%', end: 'bottom 55%', scrub: CONFIG.scrub } });
-    gsap.to('.vault-door', { rotate: 0, ease: 'power2.inOut', scrollTrigger: { trigger: '.getaway-section', start: 'top 80%', end: 'top 25%', scrub: CONFIG.scrub } });
-    gsap.fromTo('.contact-actions', { y: 18, opacity: .35 }, { y: 0, opacity: 1, ease: 'power2.out', scrollTrigger: { trigger: '.getaway-section', start: 'top 78%', end: 'top 28%', scrub: CONFIG.scrub } });
-    gsap.to('.mission-complete', { y: -12, rotate: 0, ease: 'sine.inOut', scrollTrigger: { trigger: '.getaway-section', start: 'top 80%', end: 'bottom bottom', scrub: CONFIG.scrub } });
   } else {
     $$('.case-file').forEach(card => card.classList.add('is-static'));
     $$('.field-route-draw,.timeline-string,.getaway-route-draw').forEach(path => { path.style.strokeDashoffset = '0'; });
@@ -334,6 +410,7 @@
   // Clean up if this page is ever embedded and removed by a navigation framework.
   window.addEventListener('pagehide', () => {
     window.clearInterval(clockTimer);
+    if (keypadObserver) keypadObserver.disconnect();
     if (lenis) {
       if (tickerCallback) gsap.ticker.remove(tickerCallback);
       lenis.destroy();
